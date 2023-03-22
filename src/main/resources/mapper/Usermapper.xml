@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.mapper.UserMapper">
+
+    <resultMap id="loginInfer" type="com.example.blog.entity.User">
+        <result property="userId" column="userId" jdbcType="INTEGER"></result>
+    </resultMap>
+
+
+<!--    这里仅查询User对象的ID属性，会为空？-->
+    <select id="getUserNameAndPassword" resultMap="loginInfer">
+        select * from users
+        where user_name = #{userName} and password = #{password}
+    </select>
+
+</mapper>

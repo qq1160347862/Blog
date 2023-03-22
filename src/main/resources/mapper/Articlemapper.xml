@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.blog.mapper.ArticleMapper">
+
+    <resultMap id="ArticleIdAndUserName" type="com.example.blog.entity.Vo.ArticleUserSortVo">
+        <result property="articleId" column="articleId" jdbcType="INTEGER"></result>
+        <result property="userName" column="userName" jdbcType="VARCHAR"></result>
+        <result property="title" column="title" jdbcType="VARCHAR"></result>
+        <result property="content" column="content" jdbcType="LONGVARCHAR"></result>
+        <result property="historyCount" column="historyCount" jdbcType="INTEGER"></result>
+        <result property="labelName" column="labelName" jdbcType="VARCHAR"></result>
+        <result property="pubDate" column="pubDate" jdbcType="DATETIMEOFFSET"></result>
+        <result property="sortId" column="sortId" jdbcType="INTEGER"></result>
+        <result property="sortName" column="sortName" jdbcType="VARCHAR"></result>
+    </resultMap>
+
+<!--    这里如果不用 as 映射和Bean类属性名一致，则返回结果为空-->
+    <select id="findArticlesAndUserNameAndSortName" resultMap="ArticleIdAndUserName">
+        SELECT  user_name as userName,title,content,articles.article_id as articleId,
+                history_count as historyCount,label_name as labelName,
+                pub_date as pubDate,sort_id as sortId,sort_name as sortName,
+                recommend
+        FROM users,articles,sorts,labels
+        WHERE users.user_id = articles.user_id and sorts.article_id = articles.article_id
+            and articles.label_id = labels.label_id
+        ORDER BY pub_date desc
+    </select>
+
+    <select id="findArticlesAndUserNameAndSortNameByHistory" resultMap="ArticleIdAndUserName">
+        SELECT  user_name as userName,title,content,articles.article_id as articleId,
+                history_count as historyCount,label_name as labelName,
+                pub_date as pubDate,sort_id as sortId,sort_name as sortName,
+                recommend
+        FROM users,articles,sorts,labels
+        WHERE users.user_id = articles.user_id and sorts.article_id = articles.article_id
+            and articles.label_id = labels.label_id
+        ORDER BY history_count desc
+    </select>
+
+    <select id="findArticleAndUserNameAndSortNameByRecommend" resultMap="ArticleIdAndUserName">
+        SELECT  user_name as userName,title,content,articles.article_id as articleId,
+                history_count as historyCount,label_name as labelName,
+                pub_date as pubDate,sort_id as sortId,sort_name as sortName,
+                recommend
+        FROM users,articles,sorts,labels
+        WHERE users.user_id = articles.user_id and sorts.article_id = articles.article_id
+            and articles.label_id = labels.label_id
+        ORDER BY recommend desc
+    </select>
+</mapper>
