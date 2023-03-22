@@ -35,3 +35,34 @@ export const getArticleByPageByRecommend = (data) => {
         }
     })
 }
+
+
+/************************ 管理层 *******************************/
+//获取文章数据
+export const ArticleByPage = (data) => {
+  return service({
+      method:"GET",
+      url:"/article/ArticleByPage",
+      params:{
+          current:data.current,
+          size:data.size
+      }
+  })
+}
+
+export const addArticle = (data) => {
+  return service({
+      method:"POST",
+      url:"/article",
+      data:{
+          title:data.title,
+          content:data.content,
+          userId:data.userId,
+          sortId:data.sortId,
+          historyCount:0,
+          labelId:data.labelId,
+          pubDate:data.pubDate,
+          recommend:data.recommend
+      }
+  })
+}

@@ -1,5 +1,6 @@
 import service from "../index.js";
 
+//测试使用中
 export const getUser = () => {
     return service({
         method:"GET",
@@ -21,5 +22,12 @@ export const login = (data) => {
       auth:{
 
       }
+  })
+}
+
+export const getUserIdAndUserName = () => {
+  return service({
+      method:"GET",
+      url:"/user/getUserIdAndUserName"
   })
 }

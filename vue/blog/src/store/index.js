@@ -1,7 +1,8 @@
 import {createStore} from 'vuex'
 import userModule from '@/store/userModule/index'
 import articleModule from '@/store/articleModule/index'
-
+import LabelModule from "@/store/labelModule";
+import sortModule from "@/store/sortModule";
 const musicModule = {
     namespaced:true, //命名空间 调用时路径为: moduleName/functionName
     state: {
@@ -24,6 +25,8 @@ export default createStore({
     modules :{
         musicModule: musicModule,
         userModule: userModule,
-        articleModule: articleModule
+        articleModule: articleModule,
+        LabelModule:LabelModule,
+        sortModule:sortModule
     }
 })

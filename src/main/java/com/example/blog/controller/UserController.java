@@ -28,6 +28,13 @@ public class UserController {
 
         return result;
     }
+
+    @GetMapping("/user/getUserIdAndUserName")
+    public Result userIdAndUserName(){
+        Result result = userService.getUserIdAndUserName();
+        return result;
+    }
+
     @GetMapping("/user/{id}")
     public String getUserById(@PathVariable int id){
         System.out.println(id);

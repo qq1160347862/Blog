@@ -1,10 +1,18 @@
-import {getArticleByPage, getArticleByPageByHistory, getArticleByPageByRecommend} from "@/request/api/article";
+import {
+    ArticleByPage,
+    getArticleByPage,
+    getArticleByPageByHistory,
+    getArticleByPageByRecommend
+} from "@/request/api/article";
 
 const articleModule = {
     namespaced:true,
     state:{
         articleList:[],
         total:0,
+
+        article:[],
+        articleTotal:0,
     },
     mutations:{
         updateArticleList(state,value){
@@ -12,7 +20,13 @@ const articleModule = {
         },
         updateTotal(state,value){
             state.total = value
-        }
+        },
+        updateArticle(state,value){
+            state.article = value
+        },
+        updateArticleTotal(state,value){
+            state.articleTotal = value
+        },
     },
     actions:{
         //默认按时间排序
@@ -68,6 +82,17 @@ const articleModule = {
                 console.log("数据获取失败")
             }
         },
+
+        //分页获取文章(无条件)
+        async getArticleByPage(context,value){
+            let res = await ArticleByPage(value)
+            if (res.data.code === 2000){
+                context.commit("updateArticle",res.data.data.articleByPage.records)
+                context.commit("updateArticleTotal",res.data.data.articleByPage.total)
+            }else {
+                console.log("数据获取失败")
+            }
+        }
     }
 
 }

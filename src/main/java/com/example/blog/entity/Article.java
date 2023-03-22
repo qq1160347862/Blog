@@ -19,6 +19,7 @@ public class Article {
     @TableField("content")
     private String content;
     private Integer userId;
+    private Integer sortId;
     private Integer historyCount;
     private Integer labelId;
     private Date pubDate;

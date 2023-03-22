@@ -1,13 +1,17 @@
-import {login} from "@/request/api/user";
+import {getUserIdAndUserName, login} from "@/request/api/user";
 
 const userModule = {
     namespaced:true,
     state: {
-        token:'null'
+        token:'null',
+        userList:[]
     },
     mutations: {
         updateToken(state,value){
             state.token = value
+        },
+        updateUserList(state,value){
+            state.userList = value
         }
     },
     //dispatch
@@ -24,6 +28,14 @@ const userModule = {
             }
             return res.data.message
         },
+        async UserIdAndUserName(context){
+            let res = await getUserIdAndUserName()
+            if (res.data.code === 2000){
+                context.commit('updateUserList',res.data.data.list)
+            }else {
+                console.log("返回username和userid异常")
+            }
+        }
     }
 
 }

@@ -28,7 +28,7 @@ const routers = [
         //路由守卫
         beforeEnter:(to,from,next)=>{
             if(store.state.userModule.token !== null && store.state.userModule.token !== 'null' || localStorage.getItem("token")){
-                next('/admin/index')
+                next('/admin')
             }else {
                 next()
             }

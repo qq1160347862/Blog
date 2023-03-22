@@ -2,10 +2,13 @@ package com.example.blog.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.blog.Utils.Result;
+import com.example.blog.entity.Article;
 import com.example.blog.service.ArticleService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,11 +41,25 @@ public class ArticleController {
         return result;
     }
 
+    //分页获取文章内容(无条件)
+    @GetMapping("/article/ArticleByPage")
+    public Result ArticleByPage(@Param("current") int current,
+                                @Param("size") int size){
+        Result result = articleService.getArticleByPage(current,size);
+        return result;
+    }
+
+    @PostMapping("/article")
+    public Result addArticle(@RequestBody Article article){
+        Result result = articleService.addArticle(article);
+        return result;
+    }
+
     //测试接口
     @GetMapping("/article/test")
     public Result test(@Param("current") int current,
                                    @Param("size") int size){
-        Result result = articleService.selectUserNameAndArticleId(current,size);
+        Result result = articleService.testService(current,size);
         return result;
     }
 }

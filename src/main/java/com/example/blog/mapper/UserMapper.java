@@ -22,4 +22,5 @@ public interface UserMapper extends BaseMapper<User> {
 
     List<User> getUserNameAndPassword(@Param("userName") String userName,
                                              @Param("password") String password);
+    List<User> getUserIdAndUserName();
 }

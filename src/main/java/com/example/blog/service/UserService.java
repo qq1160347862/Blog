@@ -36,4 +36,17 @@ public class UserService{
 //         用户返回token时,获取用户名，然后以此来判断是否是当前用户（是否要查询数据库？应该不用）
 //        String username = JwtUtils.getClaimsByToken(token).getSubject();
     }
+
+    public Result getUserIdAndUserName(){
+
+        List<User> list = userMapper.getUserIdAndUserName();
+        System.out.println(list);
+        if (!list.isEmpty()){
+            message = "返回userName和userId";
+            return Result.ok(message).data("list",list);
+        }else {
+            message = "返回异常";
+            return Result.error(message);
+        }
+    }
 }

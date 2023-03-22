@@ -10,6 +10,7 @@ import com.example.blog.entity.Vo.ArticleUserSortVo;
 import com.example.blog.mapper.ArticleMapper;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class ArticleService {
@@ -67,14 +68,39 @@ public class ArticleService {
         }
     }
 
+    //分页获取文章内容(无条件查询)
+    public Result getArticleByPage(int current, int size){
+        Page<Article> page = new Page<>(current,size);
+        IPage<Article> iPage = articleMapper.selectPage(page,null);
+
+        if(iPage != null){
+            message = "当前页:"+current+" 页大小:"+size;
+            return Result.ok(message).data("articleByPage",iPage);
+        }else {
+            message = "查询内容为空";
+            return Result.error(message).data("articleByPage", null);
+        }
+    }
+
+    public Result addArticle(Article article){
+        articleMapper.addArticle(article.getTitle(),
+                                article.getContent(),
+                                article.getUserId(),
+                                article.getSortId(),
+                                article.getHistoryCount(),
+                                article.getLabelId(),
+                                article.getPubDate(),
+                                article.getRecommend());
+        return Result.ok();
+    }
 
     //测试接口
-    public Result selectUserNameAndArticleId(int current, int size){
+    public Result testService(int current, int size){
         //设置页数和数据Size
 
-        Page<ArticleUserSortVo> page = new Page<>(current,size);
-        IPage<ArticleUserSortVo> iPage = articleMapper.findArticlesAndUserNameAndSortName(page);
-        System.out.println(iPage.getRecords().get(0).getLabelName());
+        Page<Article> page = new Page<>(current,size);
+        IPage<Article> iPage = articleMapper.selectPage(page,null);
+        System.out.println(iPage.getRecords());
         return Result.ok().data("page",iPage);
     }
 }

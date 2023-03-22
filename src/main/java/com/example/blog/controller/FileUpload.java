@@ -1,5 +1,6 @@
 package com.example.blog.controller;
 
+import com.example.blog.Utils.Result;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,8 +13,9 @@ import java.io.IOException;
 public class FileUpload {
 
     @PostMapping("/upload")
-    public String upload(String name, MultipartFile photo, HttpServletRequest request) throws IOException {
-        System.out.println(name);
+    public Result upload(MultipartFile photo, HttpServletRequest request) throws IOException {
+
+
 
         //获取文件名
         System.out.println(photo.getOriginalFilename());
@@ -28,7 +30,7 @@ public class FileUpload {
         //保存文件
         saveFile(photo,path);
 
-        return "succeed";
+        return Result.ok().data("imageName",photo.getOriginalFilename());
     }
 
     public void saveFile(MultipartFile photo, String path) throws IOException{
