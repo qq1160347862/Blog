@@ -1,11 +1,11 @@
 <template>
   <div class="adminSideNavContainer">
     <el-menu
-        active-text-color="#ffd04b"
-        background-color="#545c64"
+        active-text-color="#409cfd"
+        background-color="#212426"
         mode="vertical"
         default-active="userController"
-        text-color="#fff"
+        text-color="#E3E4F0"
         unique-opened="unique-opened"
         :router="true"
     >

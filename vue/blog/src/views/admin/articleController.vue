@@ -470,7 +470,6 @@ store.dispatch("sortModule/SortIdAndSortName")
 .articleControllerContainer {
   width: 100%;
   height: 100%;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -478,9 +477,9 @@ store.dispatch("sortModule/SortIdAndSortName")
 .articleControllerCard {
   width: 95%;
   height: 95%;
-  background-color: #FFFFFF;
+  background-color: #eaeaef;
   border-radius: 1rem;
-  box-shadow: 0 0 10px 2px rgba(3, 3, 3, 0.3);
+  box-shadow: 0 0 10px 2px rgba(227, 228, 240, 0.24);
 
   display: flex;
   flex-direction: column;
@@ -529,7 +528,7 @@ store.dispatch("sortModule/SortIdAndSortName")
 /********************* 表格区域样式 ******************/
 .accFormArea {
   flex: 8;
-  background-color: rgba(248, 186, 119, 0.4);
+  /*background-color: rgba(197, 148, 75, 0.91);*/
   display: flex;
   flex-direction: column;
   align-items: center;

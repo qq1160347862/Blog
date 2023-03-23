@@ -19,7 +19,7 @@ export default {
 .adminTopNavContainer {
   height: 3.5rem;
   width: 100%;
-  background-color: #545c64;
+  background-color: #212426;
 
   display: flex;
   align-items: center;
@@ -38,7 +38,7 @@ export default {
 .adminTitle {
   font-weight: bold;
   font-size: 1.8rem;
-  color: #FFFFFF;
+  color: #E3E4F0;
   margin-left: 1rem;
 }
 </style>
