@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.Utils.Result;
 import com.example.blog.entity.User;
+import com.example.blog.entity.UserTools.IdList;
 import com.example.blog.mapper.UserMapper;
 import com.example.blog.service.UserService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,19 +37,36 @@ public class UserController {
         return result;
     }
 
+    @GetMapping("/user")
+    public Result UserByPage(@Param("current") int current,
+                             @Param("size") int size){
+        Result result = userService.getUserByPage(current,size);
+        return result;
+    }
+
+
+    @PostMapping("/user")
+    public Result addUser(@RequestBody User user){
+        Result result = userService.addUser(user);
+        return result;
+    }
+    @PutMapping("/user")
+    public Result updateUser(@RequestBody User user){
+        Result result = userService.updateUser(user);
+        return result;
+    }
+    @DeleteMapping("/user")
+    public Result deleteUser(@RequestBody IdList idList){
+        Result result = userService.deleteUser(idList);
+        return result;
+    }
+
     @GetMapping("/user/{id}")
     public String getUserById(@PathVariable int id){
         System.out.println(id);
         return "返回用户Id:" + id;
     }
-    @GetMapping("/user")
-    public List getAllUsers(){
 
-
-        List<User> list = userMapper.selectList(null);
-        System.out.println(list);
-        return list;
-    }
     @GetMapping("user/findByPage")
     public IPage findByPage(){
         //设置页数和数据Size
@@ -56,20 +75,4 @@ public class UserController {
         return iPage;
     }
 
-    @PostMapping("/user")
-    public int addUser(User user){
-
-        int res = userMapper.insert(user);
-
-        return res;
-    }
-    @PutMapping("/user")
-    public String update(User user){
-        return "更新用户";
-    }
-    @DeleteMapping("/user/{id}")
-    public String deleteUserById(@PathVariable int id){
-        System.out.println(id);
-        return "被删除的用户Id:" + id;
-    }
 }

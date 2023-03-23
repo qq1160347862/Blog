@@ -31,3 +31,52 @@ export const getUserIdAndUserName = () => {
       url:"/user/getUserIdAndUserName"
   })
 }
+
+/************************ 管理层 *******************************/
+
+export const UserByPage = (data) => {
+    return service({
+        method:"GET",
+        url:"/user",
+        params:{
+            current:data.current,
+            size:data.size
+        }
+    })
+
+}
+
+export const addUser = (data) => {
+  return service({
+      method:"POST",
+      url:"/user",
+      data:{
+          userName:data.userName,
+          password:data.password,
+          userDesc:data.userDesc
+      }
+  })
+}
+
+export const updateUser = (data) => {
+    return service({
+        method:"PUT",
+        url:"/user",
+        data:{
+            userName:data.userName,
+            password:data.password,
+            userDesc:data.userDesc,
+            userId:data.userId
+        }
+    })
+}
+
+export const deleteUser = (data) => {
+    return service({
+        method:"DELETE",
+        url:"/user",
+        data:{
+            idList: data
+        }
+    })
+}

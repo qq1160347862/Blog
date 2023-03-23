@@ -1,10 +1,14 @@
-import {getUserIdAndUserName, login} from "@/request/api/user";
+import {getUserIdAndUserName, login, UserByPage} from "@/request/api/user";
 
 const userModule = {
     namespaced:true,
     state: {
         token:'null',
-        userList:[]
+        userList:[],//下拉框选择数据
+
+        //用户管理数据
+        users:[],
+        total:0,
     },
     mutations: {
         updateToken(state,value){
@@ -12,6 +16,12 @@ const userModule = {
         },
         updateUserList(state,value){
             state.userList = value
+        },
+        updateUsers(state,value){
+            state.users = value
+        },
+        updateTotal(state, value) {
+            state.total = value
         }
     },
     //dispatch
@@ -34,6 +44,15 @@ const userModule = {
                 context.commit('updateUserList',res.data.data.list)
             }else {
                 console.log("返回username和userid异常")
+            }
+        },
+        async getUserByPage(context,value){
+            let res = await UserByPage(value)
+            if (res.data.code === 2000){
+                context.commit("updateUsers",res.data.data.userByPage.records)
+                context.commit("updateTotal",res.data.data.userByPage.total)
+            }else {
+                console.log("数据获取失败")
             }
         }
     }

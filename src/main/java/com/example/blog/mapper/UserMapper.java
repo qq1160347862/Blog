@@ -20,7 +20,18 @@ public interface UserMapper extends BaseMapper<User> {
 //    @Select("select * from users where user_name = #{userName} and password = #{password}")
 //    List<User> getUserNameAndPassword(User user);
 
+    //登录使用
     List<User> getUserNameAndPassword(@Param("userName") String userName,
                                              @Param("password") String password);
+    //下拉框信息
     List<User> getUserIdAndUserName();
+
+    void addUser(@Param("userName") String userName,
+                 @Param("password") String password,
+                 @Param("userDesc") String userDesc);
+
+    void updateUser(@Param("userName") String userName,
+                    @Param("password") String password,
+                    @Param("userDesc") String userDesc,
+                    @Param("userId") Integer userId);
 }

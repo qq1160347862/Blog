@@ -12,4 +12,6 @@ public interface LabelMapper extends BaseMapper<Label> {
     //查询所有用户
     @Select("SELECT DISTINCT * FROM labels")
     List<Label> getLabelIdAndLabelName();
+
+
 }

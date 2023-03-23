@@ -1,8 +1,12 @@
 package com.example.blog.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.Utils.JwtUtils;
 import com.example.blog.Utils.Result;
+import com.example.blog.entity.Article;
 import com.example.blog.entity.User;
+import com.example.blog.entity.UserTools.IdList;
 import com.example.blog.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,7 @@ public class UserService{
 //        String username = JwtUtils.getClaimsByToken(token).getSubject();
     }
 
+    //用于拉下选择框
     public Result getUserIdAndUserName(){
 
         List<User> list = userMapper.getUserIdAndUserName();
@@ -48,5 +53,40 @@ public class UserService{
             message = "返回异常";
             return Result.error(message);
         }
+    }
+
+    //分页获取用户信息
+    public Result getUserByPage(int current, int size){
+        Page<User> page = new Page<>(current,size);
+        IPage<User> iPage = userMapper.selectPage(page,null);
+
+        if(iPage != null){
+            message = "当前页:"+current+" 页大小:"+size;
+            return Result.ok(message).data("userByPage",iPage);
+        }else {
+            message = "查询内容为空";
+            return Result.error(message).data("userByPage", null);
+        }
+    }
+
+    public Result addUser(User user){
+        userMapper.addUser(user.getUserName(),
+                user.getPassword(),
+                user.getUserDesc());
+        return Result.ok();
+    }
+
+    public Result updateUser(User user){
+        userMapper.updateUser(user.getUserName(),
+                user.getPassword(),
+                user.getUserDesc(),
+                user.getUserId());
+        return Result.ok();
+    }
+
+    public Result deleteUser(IdList list){
+        //批量删除
+        userMapper.deleteBatchIds(list.getIdList());
+        return Result.ok();
     }
 }
