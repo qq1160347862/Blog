@@ -32,7 +32,7 @@
           <el-table-column property="pubDate" label="发行日期"  />
           <el-table-column fixed="right" label="文章操作" width="120">
             <template #default="scope">
-              <el-button link type="primary" size="small">预览</el-button>
+              <el-button link type="primary" size="small" @click="openPreviewDrawer(scope.row)">预览</el-button>
               <el-button link type="primary" size="small" @click="openEditDrawer(scope.row)">修改</el-button>
             </template>
           </el-table-column>
@@ -220,6 +220,25 @@
           </div>
         </el-scrollbar>
       </el-drawer>
+      <el-drawer v-model="previewDrawer"
+                 :with-header="false"
+                 size="80%"
+                 destroy-on-close
+                 :direction="direction">
+        <el-scrollbar>
+          <div class="previewDrawer">
+            <div class="previewArea">
+              <Editor
+                  style="height: 676px; overflow-y: hidden;"
+                  v-model="valueHtml_preview"
+                  :defaultConfig="editorConfig"
+                  :mode=mode
+                  @onCreated="handleCreated_preview"
+              />
+            </div>
+          </div>
+        </el-scrollbar>
+      </el-drawer>
     </div>
   </div>
 </template>
@@ -243,6 +262,7 @@ let inputSearch = ref('')
 let accTable = ref()
 let addDrawer = ref(false)
 let editDrawer = ref(false)
+let previewDrawer = ref(false)
 let direction = ref('ttb')
 let addFormRef = ref()
 let editFormRef = ref()
@@ -296,9 +316,11 @@ let articleIdList = []
 //编辑器实例
 const editorRef = shallowRef()
 const editorRef_edit = shallowRef()
+const editorRef_preview = shallowRef()
 //内容Html
 const valueHtml = ref('')
 const valueHtml_edit = ref('')
+const valueHtml_preview = ref('hahahah')
 //编辑器配置
 const toolbarConfig = {}
 const editorConfig = { placeholder: '请输入内容...',MENU_CONF:{}}
@@ -327,6 +349,9 @@ const handleCreated = (editor) => {
 }
 const handleCreated_edit = (editor) => {
   editorRef_edit.value = editor // 记录 editor 实例，重要！
+}
+const handleCreated_preview = (editor) => {
+  editorRef_preview.value = editor // 记录 editor 实例，重要！
 }
 
 const handleCurrentChange = () => {
@@ -364,6 +389,15 @@ const openEditDrawer = (e) => {
   userList = store.state.userModule.userList
   labelList = store.state.LabelModule.labelList
   sortList = store.state.sortModule.sortList
+}
+const openPreviewDrawer = (e) => {
+  previewDrawer.value = true
+  //延时执行
+  const delayTime = setTimeout(()=>{
+    editorRef_preview.value.setHtml(e.content)
+    editorRef_preview.value.disable()
+  },500)
+
 }
 const ArticleSelection = () => {
   let tempList = []
@@ -525,7 +559,8 @@ store.dispatch("sortModule/SortIdAndSortName")
   padding: 0;
 }
 .addDrawer,
-.editDrawer {
+.editDrawer,
+.previewDrawer{
   width: 100%;
   height: 100%;
 
@@ -553,5 +588,8 @@ store.dispatch("sortModule/SortIdAndSortName")
 .editArea {
   height: 800px;
   width: 90%;
+}
+.previewArea {
+  width: 100%;
 }
 </style>
