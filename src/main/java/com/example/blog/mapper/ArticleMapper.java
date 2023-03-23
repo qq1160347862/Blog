@@ -23,4 +23,16 @@ public interface ArticleMapper extends BaseMapper<Article> {
                     @Param("labelId") Integer labelId,
                     @Param("pubDate") Date pubDate,
                     @Param("recommend") Integer recommend);
+
+    void updateArticle(@Param("title") String title,
+                       @Param("content") String content,
+                       @Param("userId") Integer userId,
+                       @Param("sortId") Integer sortId,
+                       @Param("historyCount") Integer historyCount,
+                       @Param("labelId") Integer labelId,
+                       @Param("pubDate") Date pubDate,
+                       @Param("recommend") Integer recommend,
+                       @Param("articleId") Integer articleId);
 }
+
+

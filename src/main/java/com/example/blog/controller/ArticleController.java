@@ -3,13 +3,13 @@ package com.example.blog.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.blog.Utils.Result;
 import com.example.blog.entity.Article;
+import com.example.blog.entity.ArticleTools.IdList;
 import com.example.blog.service.ArticleService;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class ArticleController {
@@ -52,6 +52,18 @@ public class ArticleController {
     @PostMapping("/article")
     public Result addArticle(@RequestBody Article article){
         Result result = articleService.addArticle(article);
+        return result;
+    }
+
+    @PutMapping("/article")
+    public Result updateArticle(@RequestBody Article article){
+        Result result = articleService.updateArticle(article);
+        return result;
+    }
+
+    @DeleteMapping("/article")
+    public Result deleteArticle(@RequestBody IdList idList){
+        Result result = articleService.deleteArticle(idList);
         return result;
     }
 

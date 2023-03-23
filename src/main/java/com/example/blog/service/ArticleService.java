@@ -3,13 +3,18 @@ package com.example.blog.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.Utils.Result;
 import com.example.blog.entity.Article;
+import com.example.blog.entity.ArticleTools.IdList;
 import com.example.blog.entity.Vo.ArticleUserSortVo;
 import com.example.blog.mapper.ArticleMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -94,12 +99,34 @@ public class ArticleService {
         return Result.ok();
     }
 
+    public Result updateArticle(Article article){
+        articleMapper.updateArticle(article.getTitle(),
+                article.getContent(),
+                article.getUserId(),
+                article.getSortId(),
+                article.getHistoryCount(),
+                article.getLabelId(),
+                article.getPubDate(),
+                article.getRecommend(),
+                article.getArticleId());
+        return Result.ok();
+    }
+
+    public Result deleteArticle(IdList idList){
+        //批量删除
+        articleMapper.deleteBatchIds(idList.getIdList());
+        return Result.ok();
+    }
+
     //测试接口
     public Result testService(int current, int size){
         //设置页数和数据Size
 
         Page<Article> page = new Page<>(current,size);
         IPage<Article> iPage = articleMapper.selectPage(page,null);
+//        List<Integer> list = new ArrayList<>();
+//        list.add(1);
+//        articleMapper.deleteBatchIds(list);
         System.out.println(iPage.getRecords());
         return Result.ok().data("page",iPage);
     }

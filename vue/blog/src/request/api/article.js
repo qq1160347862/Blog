@@ -66,3 +66,31 @@ export const addArticle = (data) => {
       }
   })
 }
+
+export const updateArticle = (data) => {
+  return service({
+      method:"PUT",
+      url:"/article",
+      data:{
+          title:data.title,
+          content:data.content,
+          userId:data.userId,
+          sortId:data.sortId,
+          historyCount:0,
+          labelId:data.labelId,
+          pubDate:data.pubDate,
+          recommend:data.recommend,
+          articleId:data.articleId
+      }
+  })
+}
+
+export const deleteArticle = (data) => {
+  return service({
+      method:"DELETE",
+      url:"/article",
+      data:{
+          idList:data
+      }
+  })
+}

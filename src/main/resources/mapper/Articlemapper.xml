@@ -53,4 +53,11 @@
         insert into articles (title,content,user_id,sort_id,history_count,label_id,pub_date,recommend)
         values(#{title},#{content},#{userId},#{sortId},#{historyCount},#{labelId},#{pubDate},#{recommend})
     </insert>
+
+    <update id="updateArticle" parameterType="com.example.blog.entity.Article">
+        update articles
+        set title=#{title},content=#{content},user_id=#{userId},history_count=#{historyCount},label_id=#{labelId},
+            pub_date=#{pubDate},recommend=#{recommend},sort_id=#{sortId}
+        WHERE article_id=#{articleId}
+    </update>
 </mapper>
