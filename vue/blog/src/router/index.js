@@ -58,6 +58,16 @@ const routers = [
                 path: 'articleController',
                 name: 'articleController',
                 component: () => import('../views/admin/articleController')
+            },
+            {
+                path: 'labelController',
+                name: 'labelController',
+                component: () => import('../views/admin/labelController')
+            },
+            {
+                path: 'sortController',
+                name: 'sortController',
+                component: () => import('../views/admin/sortController')
             }
         ],
         component: () => import('../views/admin/index')

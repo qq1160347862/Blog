@@ -17,11 +17,11 @@
         <el-icon><icon-menu /></el-icon>
         <span>文章管理</span>
       </el-menu-item>
-      <el-menu-item index="3">
+      <el-menu-item index="sortController">
         <el-icon><document /></el-icon>
         <span>分类管理</span>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="labelController">
         <el-icon><setting /></el-icon>
         <span>标签管理</span>
       </el-menu-item>

@@ -42,10 +42,10 @@ public class SortService {
 
         if(iPage != null){
             message = "当前页:"+current+" 页大小:"+size;
-            return Result.ok(message).data("labelByPage",iPage);
+            return Result.ok(message).data("sortByPage",iPage);
         }else {
             message = "查询内容为空";
-            return Result.error(message).data("labelByPage", null);
+            return Result.error(message).data("sortByPage", null);
         }
     }
 

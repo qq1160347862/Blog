@@ -340,8 +340,9 @@ editorConfig.MENU_CONF['uploadImage'] = {
 onBeforeUnmount(() => {
   const editor = editorRef.value
   const editor2 = editorRef_edit.value
-  if (editor == null && editor2 == null) return
+  if (editor == null) return
   editor.destroy()
+  if (editor2 == null) return
   editor2.destroy()
 })
 const handleCreated = (editor) => {
