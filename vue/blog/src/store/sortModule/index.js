@@ -1,4 +1,4 @@
-import {getSortIdAndSortName, SortByPage} from "@/request/api/sort";
+import {getSortIdAndSortName, LikeSortByPage, SortByPage} from "@/request/api/sort";
 import {LabelByPage} from "@/request/api/label";
 
 
@@ -36,6 +36,15 @@ const sortModule = {
             if (res.data.code === 2000){
                 context.commit("updateSorts",res.data.data.sortByPage.records)
                 context.commit("updateTotal",res.data.data.sortByPage.total)
+            }else {
+                console.log("数据获取失败")
+            }
+        },
+        async likeSortByPage(context,value){
+            let res = await LikeSortByPage(value)
+            if (res.data.code === 2000){
+                context.commit("updateSorts",res.data.data.likeSortByPage.records)
+                context.commit("updateTotal",res.data.data.likeSortByPage.total)
             }else {
                 console.log("数据获取失败")
             }

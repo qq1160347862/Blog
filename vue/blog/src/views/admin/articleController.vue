@@ -11,7 +11,7 @@
                     v-model="inputSearch"
                     :prefix-icon="Search"
                     type="text"/>
-          <el-button color="#e5a13c" round>查询文章</el-button>
+          <el-button color="#e5a13c" round @click="searchArticle">查询文章</el-button>
         </div>
       </div>
       <div class="accFormArea">
@@ -254,11 +254,10 @@ import {onMounted, reactive, ref, shallowRef, onBeforeUnmount} from 'vue'
 import store from "@/store";
 import '@wangeditor/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
-import xmlFormat from 'xml-formatter';
 import {addArticle, updateArticle, deleteArticle} from "@/request/api/article";
 let current = ref(1)
 let size = ref(10)
-let inputSearch = ref('')
+let inputSearch = ref("")
 let accTable = ref()
 let addDrawer = ref(false)
 let editDrawer = ref(false)
@@ -456,6 +455,15 @@ const edit = async () => {
       console.log("表单不完整")
     }
   })
+}
+const searchArticle = async () => {
+  current.value = 1
+  size.value = 10
+  if (inputSearch.value === undefined || inputSearch.value === ""){
+    await store.dispatch("articleModule/getArticleByPage",{current:current.value,size:size.value})
+  }else {
+   await store.dispatch("articleModule/likeArticleByPage",{current:current.value,size:size.value,query:inputSearch.value})
+  }
 }
 //获取表格信息,用户信息等
 store.dispatch("articleModule/getArticleByPage",{current:current.value,size:size.value})

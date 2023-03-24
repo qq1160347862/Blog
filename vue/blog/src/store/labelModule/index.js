@@ -1,4 +1,4 @@
-import {getLabelIdAndLabelName, LabelByPage} from "@/request/api/label";
+import {getLabelIdAndLabelName, LabelByPage, LikeLabelByPage} from "@/request/api/label";
 
 const labelModule =  {
     namespaced:true,
@@ -34,6 +34,15 @@ const labelModule =  {
             if (res.data.code === 2000){
                 context.commit("updateLabels",res.data.data.labelByPage.records)
                 context.commit("updateTotal",res.data.data.labelByPage.total)
+            }else {
+                console.log("数据获取失败")
+            }
+        },
+        async likeLabelByPage(context,value){
+            let res = await LikeLabelByPage(value)
+            if (res.data.code === 2000){
+                context.commit("updateLabels",res.data.data.likeLabelByPage.records)
+                context.commit("updateTotal",res.data.data.likeLabelByPage.total)
             }else {
                 console.log("数据获取失败")
             }

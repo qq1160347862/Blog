@@ -46,6 +46,18 @@ export const UserByPage = (data) => {
 
 }
 
+export const LikeUserByPage = (data) => {
+    return service({
+        method:"GET",
+        url:"user/likeUserByPage",
+        params:{
+            current:data.current,
+            size:data.size,
+            query:data.query
+        }
+    })
+}
+
 export const addUser = (data) => {
   return service({
       method:"POST",

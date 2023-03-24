@@ -22,6 +22,17 @@ export const LabelByPage = (data) => {
     })
 
 }
+export const LikeLabelByPage = (data) => {
+    return service({
+        method:"GET",
+        url:"label/likeLabelByPage",
+        params:{
+            current:data.current,
+            size:data.size,
+            query:data.query
+        }
+    })
+}
 
 export const addLabel = (data) => {
     return service({

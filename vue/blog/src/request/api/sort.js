@@ -23,6 +23,18 @@ export const SortByPage = (data) => {
 
 }
 
+export const LikeSortByPage = (data) => {
+    return service({
+        method:"GET",
+        url:"sort/likeSortByPage",
+        params:{
+            current:data.current,
+            size:data.size,
+            query:data.query
+        }
+    })
+}
+
 export const addSort = (data) => {
     return service({
         method:"POST",

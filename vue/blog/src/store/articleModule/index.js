@@ -2,7 +2,8 @@ import {
     ArticleByPage,
     getArticleByPage,
     getArticleByPageByHistory,
-    getArticleByPageByRecommend
+    getArticleByPageByRecommend,
+    LikeArticleByPage
 } from "@/request/api/article";
 
 const articleModule = {
@@ -92,7 +93,18 @@ const articleModule = {
             }else {
                 console.log("数据获取失败")
             }
+        },
+        //分页获取文章(模糊查询)
+        async likeArticleByPage(context,value){
+          let res = await LikeArticleByPage(value)
+            if (res.data.code === 2000){
+                context.commit("updateArticle",res.data.data.likeArticleByPage.records)
+                context.commit("updateArticleTotal",res.data.data.likeArticleByPage.total)
+            }else {
+                console.log("数据获取失败")
+            }
         }
+
     }
 
 }

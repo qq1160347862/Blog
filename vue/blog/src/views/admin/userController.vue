@@ -11,7 +11,7 @@
                     v-model="inputSearch"
                     :prefix-icon="Search"
                     type="text"/>
-          <el-button color="#e5a13c" round>查询用户</el-button>
+          <el-button color="#e5a13c" round @click="searchUser">查询用户</el-button>
         </div>
       </div>
       <div class="urcFormArea">
@@ -37,7 +37,7 @@
           <el-pagination
               background
               layout="prev, pager, next"
-              :total="store.state.articleModule.articleTotal"
+              :total="store.state.userModule.total"
               v-model:currentPage="current"
               v-model:page-size="size"
               @current-change="handleCurrentChange"
@@ -212,6 +212,15 @@ const edit = async () => {
       console.log("表单不完整")
     }
   })
+}
+const searchUser = async () => {
+  current.value = 1
+  size.value = 10
+  if (inputSearch.value === undefined || inputSearch.value === ""){
+    await store.dispatch("userModule/getUserByPage",{current:current.value,size:size.value})
+  }else {
+    await store.dispatch("userModule/likeUserByPage",{current:current.value,size:size.value,query:inputSearch.value})
+  }
 }
 
 

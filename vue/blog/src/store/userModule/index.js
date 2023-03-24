@@ -1,4 +1,4 @@
-import {getUserIdAndUserName, login, UserByPage} from "@/request/api/user";
+import {getUserIdAndUserName, LikeUserByPage, login, UserByPage} from "@/request/api/user";
 
 const userModule = {
     namespaced:true,
@@ -51,6 +51,15 @@ const userModule = {
             if (res.data.code === 2000){
                 context.commit("updateUsers",res.data.data.userByPage.records)
                 context.commit("updateTotal",res.data.data.userByPage.total)
+            }else {
+                console.log("数据获取失败")
+            }
+        },
+        async likeUserByPage(context,value){
+            let res = await LikeUserByPage(value)
+            if (res.data.code === 2000){
+                context.commit("updateUsers",res.data.data.likeUserByPage.records)
+                context.commit("updateTotal",res.data.data.likeUserByPage.total)
             }else {
                 console.log("数据获取失败")
             }

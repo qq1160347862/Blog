@@ -11,7 +11,7 @@
                     v-model="inputSearch"
                     :prefix-icon="Search"
                     type="text"/>
-          <el-button color="#e5a13c" round>查询标签</el-button>
+          <el-button color="#e5a13c" round @click="searchLabel">查询标签</el-button>
         </div>
       </div>
       <div class="llcFormArea">
@@ -187,6 +187,15 @@ const edit = async () => {
       console.log("表单不完整")
     }
   })
+}
+const searchLabel = async () => {
+  current.value = 1
+  size.value = 10
+  if (inputSearch.value === undefined || inputSearch.value === ""){
+    await store.dispatch("LabelModule/getLabelByPage",{current:current.value,size:size.value})
+  }else {
+    await store.dispatch("LabelModule/likeLabelByPage",{current:current.value,size:size.value,query:inputSearch.value})
+  }
 }
 
 //获取表格信息

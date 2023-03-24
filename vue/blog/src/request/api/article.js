@@ -49,6 +49,18 @@ export const ArticleByPage = (data) => {
       }
   })
 }
+export const LikeArticleByPage = (data) => {
+  return service({
+      method:"GET",
+      url:"article/likeArticleByPage",
+      params:{
+          current:data.current,
+          size:data.size,
+          query:data.query
+      }
+  })
+}
+
 
 export const addArticle = (data) => {
   return service({
