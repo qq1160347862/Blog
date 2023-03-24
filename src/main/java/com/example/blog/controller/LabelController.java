@@ -26,6 +26,13 @@ public class LabelController {
         Result result = labelService.getLabelByPage(current,size);
         return result;
     }
+    @GetMapping("/label/likeLabelByPage")
+    public Result likeSortByPage(@Param("current") int current,
+                                 @Param("size") int size,
+                                 @Param("query") String query){
+        Result result = labelService.likeLabelByPage(current,size,query);
+        return result;
+    }
 
     @PostMapping("/label")
     public Result addLabel(@RequestBody Label label){

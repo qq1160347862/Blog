@@ -26,6 +26,14 @@ public class SortController {
         Result result = sortService.getSortByPage(current,size);
         return result;
     }
+    @GetMapping("/sort/likeSortByPage")
+    public Result likeSortByPage(@Param("current") int current,
+                                 @Param("size") int size,
+                                 @Param("query") String query){
+        Result result = sortService.likeSortByPage(current,size,query);
+        return result;
+    }
+
 
     @PostMapping("/sort")
     public Result addSort(@RequestBody Sort sort){

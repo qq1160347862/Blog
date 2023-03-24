@@ -43,6 +43,13 @@ public class UserController {
         Result result = userService.getUserByPage(current,size);
         return result;
     }
+    @GetMapping("/user/likeUserByPage")
+    public Result likeUserByPage(@Param("current") int current,
+                                 @Param("size") int size,
+                                 @Param("query") String query){
+        Result result = userService.likeUserByPage(current,size,query);
+        return result;
+    }
 
 
     @PostMapping("/user")

@@ -41,6 +41,9 @@ public class ArticleController {
         return result;
     }
 
+
+
+
     //分页获取文章内容(无条件)
     @GetMapping("/article/ArticleByPage")
     public Result ArticleByPage(@Param("current") int current,
@@ -48,6 +51,16 @@ public class ArticleController {
         Result result = articleService.getArticleByPage(current,size);
         return result;
     }
+    //分页获取文章内容(模糊查询)
+    @GetMapping("/article/likeArticleByPage")
+    public Result likeArticleByPage(@Param("current") int current,
+                                    @Param("size") int size,
+                                    @Param("query") String query){
+        Result result = articleService.likeArticleByPage(current,size,query);
+        return  result;
+    }
+
+
 
     @PostMapping("/article")
     public Result addArticle(@RequestBody Article article){

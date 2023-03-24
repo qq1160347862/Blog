@@ -2,6 +2,7 @@ package com.example.blog.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -84,6 +85,28 @@ public class ArticleService {
         }else {
             message = "查询内容为空";
             return Result.error(message).data("articleByPage", null);
+        }
+    }
+
+    //分页获取文章内容(模糊查询)
+    public Result likeArticleByPage(int current, int size, String query){
+        //临时创建Article对象，用于查询
+        Article article = new Article();
+        article.setTitle(query);
+
+        Page<Article> page = new Page<>(current,size);
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        //sql拼接条件、数据库对应表项名、查询条件
+        //like() => title like = '%query%'
+        queryWrapper.like(article.getTitle() != null,"title",article.getTitle());
+        IPage<Article> iPage = articleMapper.selectPage(page,queryWrapper);
+
+        if(iPage != null){
+            message = "当前页:"+current+" 页大小:"+size;
+            return Result.ok(message).data("likeArticleByPage",iPage);
+        }else {
+            message = "查询内容为空";
+            return Result.error(message).data("likeArticleByPage", null);
         }
     }
 

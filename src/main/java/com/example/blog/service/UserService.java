@@ -1,5 +1,6 @@
 package com.example.blog.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.Utils.JwtUtils;
@@ -8,6 +9,7 @@ import com.example.blog.entity.Article;
 import com.example.blog.entity.User;
 import com.example.blog.entity.UserTools.IdList;
 import com.example.blog.mapper.UserMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +70,29 @@ public class UserService{
             return Result.error(message).data("userByPage", null);
         }
     }
+    //分页获取用户信息(模糊查询)
+    public Result likeUserByPage(int current, int size, String query){
+        //临时创建User对象,用于查询
+        User user = new User();
+        user.setUserName(query);
+
+        Page<User> page = new Page<>(current,size);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        //sql拼接条件、数据库对应表项名、查询条件
+        //like() => user_name like = '%query%'
+        queryWrapper.like(user.getUserName() != null, "user_name",user.getUserName());
+        IPage<User> iPage = userMapper.selectPage(page,queryWrapper);
+
+        if(iPage != null){
+            message = "当前页:"+current+" 页大小:"+size;
+            return Result.ok(message).data("likeUserByPage",iPage);
+        }else {
+            message = "查询内容为空";
+            return Result.error(message).data("likeUserByPage", null);
+        }
+
+    }
+
 
     public Result addUser(User user){
         userMapper.addUser(user.getUserName(),
