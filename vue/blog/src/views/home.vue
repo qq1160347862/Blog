@@ -28,12 +28,12 @@
                 </ul>
               </div>
               <div class="articleArea">
-                <div class="articleCard" v-for="item in store.state.articleModule.articleList"
+                <div class="articleCard" v-for="(item,itemIndex) in store.state.articleModule.articleList"
                     :key="item.articleId">
 <!--                  {{item.articleId}}-->
 <!--                  {{item.title}}-->
                   <div class="articleInfo">
-                    <div class="articleTitle">
+                    <div class="articleTitle" @click="redirectArticleIndex(itemIndex)">
                       <span>{{item.title}}</span>
                     </div>
                     <div class="articleOther">
@@ -76,31 +76,31 @@
           </div>
         </div>
         <div class="homeBottom">
-          <div class="iconBox">
-            <div class="icon">
-              <ul>
-                <li>
-                  <el-icon><Promotion /></el-icon>
-                </li>
-                <li>
-                  <el-icon><CoffeeCup /></el-icon>
-                </li>
-                <li>
-                  <el-icon><Promotion /></el-icon>
-                </li>
-                <li>
-                  <el-icon><CoffeeCup /></el-icon>
-                </li>
-              </ul>
-            </div>
-            <div class="Copyright">
-              <span>Theme by YYX | Copyright © 2022-2023 本博客仅仅作为自己学习日常学习记录使用</span>
+          <div class="links">
+            <div class="iconBox">
+              <div class="icon">
+                <ul>
+                  <li>
+                    <el-icon><Promotion /></el-icon>
+                  </li>
+                  <li>
+                    <el-icon><CoffeeCup /></el-icon>
+                  </li>
+                  <li>
+                    <el-icon><Promotion /></el-icon>
+                  </li>
+                  <li>
+                    <el-icon><CoffeeCup /></el-icon>
+                  </li>
+                </ul>
+              </div>
+              <div class="Copyright">
+                <span>Theme by YYX | Copyright © 2022-2023 本博客仅仅作为自己学习日常学习记录使用</span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="getTop" @click="getTop">
-          <el-icon><Top /></el-icon>
-        </div>
+        <el-backtop target=".el-scrollbar__wrap"  :right="40" :bottom="40"></el-backtop>
       </el-scrollbar>
     </div>
   </div>
@@ -112,6 +112,8 @@ import {Top,Promotion,CoffeeCup,UserFilled,Calendar,FolderOpened,Notebook} from 
 import {onMounted, ref, reactive} from 'vue'
 import $ from 'jquery'
 import store from '@/store'
+import {useRouter} from "vue-router"
+let router = useRouter()
 let current = ref(1)
 let size = ref(5)
 let elScroll = ref()
@@ -183,10 +185,12 @@ const handleCurrentChange = () => {
     store.dispatch("articleModule/getArticleList",{current:current.value,size:size.value})
   }
 }
-const getTop = () => {
-  elScroll.value.setScrollTop(0)
-  // elScroll.value.scrollTo(0,0)
+
+const redirectArticleIndex = (e) => {
+  store.commit('articleModule/updateArticleIndex',e)
+  router.push('/article')
 }
+
 const scroll = (e) => {
   if (e.scrollTop > 16 && !isShowTopNav){
     let color = "rgba(0, 0, 0, 0.8)"
@@ -304,7 +308,7 @@ onMounted(() => {
 .userDesc {
   width: 90%;
   height: 30%;
-  font-size: 1.1rem;
+  font-size: 1vw;
   text-align: center;
   display: flex;
   align-items: center;
@@ -465,11 +469,18 @@ onMounted(() => {
 
 /*************************** 底部样式 ********************/
 .homeBottom {
+  height: 30rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.links {
   width: 100%;
   height: 10rem;
   position: relative;
 }
-.homeBottom>.iconBox{
+.links>.iconBox{
   width: 100%;
   height: 70%;
 
@@ -483,51 +494,44 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
 }
-.homeBottom>.iconBox>.icon {
+.links>.iconBox>.icon {
   width: 50%;
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.homeBottom>.iconBox>.Copyright {
+.links>.iconBox>.Copyright {
   width: 80%;
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
-.homeBottom>.iconBox ul{
+.links>.iconBox ul{
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   height: 100%;
-  width: 50%;
+  width: 25%;
 }
-.homeBottom>.iconBox ul li {
+.links>.iconBox ul li {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.getTop {
-  position: fixed;
-  bottom: 8%;
-  right: 4%;
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
-  border: #3c99f6 solid 2px;
-  box-shadow: 0 0 12px white;
-  background-color: rgba(4, 157, 255, 0.2);
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
-  font-size: 2.2rem;
-  color: var(--headerNav-font-light-color)
+
+.homeBody>>>.el-backtop{
+  --el-backtop-bg-color: #2c2c2c;
+  --el-backtop-text-color: #FFFFFF;
+  --el-backtop-hover-bg-color: #3c98f5;
+  width: 3rem;
+  height: 3rem;
+
 }
 </style>

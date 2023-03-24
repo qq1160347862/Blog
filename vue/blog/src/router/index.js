@@ -71,6 +71,14 @@ const routers = [
             }
         ],
         component: () => import('../views/admin/index')
+    },
+    {
+        path:'/article',
+        name: 'article',
+        children: [
+
+        ],
+        component: () => import('../views/article/index')
     }
 
 ]

@@ -10,14 +10,19 @@ const articleModule = {
     namespaced:true,
     state:{
         articleList:[],
+        articleIndex:0,
         total:0,
 
+        //管理层
         article:[],
         articleTotal:0,
     },
     mutations:{
         updateArticleList(state,value){
             state.articleList = value
+        },
+        updateArticleIndex(state,value){
+            state.articleIndex = value
         },
         updateTotal(state,value){
             state.total = value

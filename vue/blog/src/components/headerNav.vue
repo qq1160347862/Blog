@@ -79,7 +79,7 @@ export default {
   height: 3.6rem;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
-  /*backdrop-filter: blur(2px);*/
+  backdrop-filter: blur(2px);
 
   display: flex;
   align-items: center;
@@ -93,7 +93,7 @@ export default {
 }
 .headerContainer .left,
 .headerContainer .right{
-  margin: auto 1rem;
+  margin: auto 0;
   height: 100%;
   text-align: center;
   font-family: 楷体;
@@ -112,13 +112,13 @@ export default {
 
 }
 .headerContainer .left .title {
-  font-size: 2rem;
+  font-size: 1.5rem;
 
 }
 .headerContainer .left .logo {
   margin-left: 1rem;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   background-image: url("../assets/logo.png");
   background-repeat: no-repeat;
   background-size: cover;
@@ -173,7 +173,7 @@ export default {
   width: 2rem;
   flex: 1;
   line-height: 3.6rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
 
 
 
@@ -183,31 +183,40 @@ export default {
 
 .headerContainer .right .menuNav>*:hover {
   border-bottom: var(--headerNav-font-light-color) solid 1px;
-
 }
 
-
-.headerContainer .right .menuNav .article ul li,
-.headerContainer .right .menuNav .search ul li{
-  /* 列表展开前状态 */
-  display: block;
-  height: 0;
-  transition: 0.3s;
+.headerContainer .right .menuNav .article ul,
+.headerContainer .right .menuNav .search ul{
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  border-radius: .5rem;
   opacity: 0;
-  background-color: rgba(0, 0, 0, 0.25);
-  transform: translateY(-.1rem);
+  transition: transform 0.3s,opacity 0.3s 0.1s;
+  transform: translateY(-8rem);
+  color: #000;
+  font-size: 1rem;
 }
-.headerContainer .right .menuNav .article ul li:last-child,
-.headerContainer .right .menuNav .search ul li:last-child{
-  border-bottom-right-radius: .8rem;
-  border-bottom-left-radius: .8rem;
-}
-.headerContainer .right .menuNav .article:hover li,
-.headerContainer .right .menuNav .search:hover li{
-  height: 6rem;
+.headerContainer .right .menuNav .article:hover ul,
+.headerContainer .right .menuNav .search:hover ul{
   opacity: 1;
-  transform: translateY(-.1rem);
+  transform: translateY(.1rem);
 }
+/*.headerContainer .right .menuNav .article ul li,*/
+/*.headerContainer .right .menuNav .search ul li{*/
+/*  !* 列表展开前状态 *!*/
+/*  display: block;*/
+/*  height: 0;*/
+/*  transition: 0.3s;*/
+/*  opacity: 0;*/
+
+/*  transform: translateY(-.1rem);*/
+/*}*/
+/*.headerContainer .right .menuNav .article:hover li,*/
+/*.headerContainer .right .menuNav .search:hover li{*/
+/*  height: 6rem;*/
+/*  opacity: 1;*/
+/*  transform: translateY(-.1rem);*/
+/*}*/
 
 
 </style>

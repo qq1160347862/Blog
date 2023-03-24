@@ -229,7 +229,7 @@
           <div class="previewDrawer">
             <div class="previewArea">
               <Editor
-                  style="height: 676px; overflow-y: hidden;"
+                  style=" overflow-y: hidden;"
                   v-model="valueHtml_preview"
                   :defaultConfig="editorConfig"
                   :mode=mode
