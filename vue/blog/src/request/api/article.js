@@ -36,6 +36,24 @@ export const getArticleByPageByRecommend = (data) => {
     })
 }
 
+//获取文章目录
+export const getArticleCatalogue = () => {
+  return service({
+      method:"GET",
+      url:"article/getArticleCatalogue"
+  })
+}
+//根据文章ID查询文章
+export const getArticleById = (data) => {
+  return service({
+      method:"GET",
+      url:"/article/getArticleById",
+      params:{
+          articleId:data
+      }
+  })
+}
+
 
 /************************ 管理层 *******************************/
 //获取文章数据

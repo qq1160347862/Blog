@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.entity.Article;
 import com.example.blog.entity.Vo.ArticleUserSortVo;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
+import java.util.List;
 
 public interface ArticleMapper extends BaseMapper<Article> {
     Page<ArticleUserSortVo> findArticlesAndUserNameAndSortName(Page<ArticleUserSortVo> page);
@@ -33,6 +35,11 @@ public interface ArticleMapper extends BaseMapper<Article> {
                        @Param("pubDate") Date pubDate,
                        @Param("recommend") Integer recommend,
                        @Param("articleId") Integer articleId);
+
+    @Select("select article_id,title from articles")
+    List<Article> getAllArticleId();
+
+    ArticleUserSortVo getArticleById(@Param("articleId") Integer articleId);
 }
 
 

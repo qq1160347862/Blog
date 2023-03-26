@@ -28,12 +28,12 @@
                 </ul>
               </div>
               <div class="articleArea">
-                <div class="articleCard" v-for="(item,itemIndex) in store.state.articleModule.articleList"
+                <div class="articleCard" v-for="item in store.state.articleModule.articleList"
                     :key="item.articleId">
 <!--                  {{item.articleId}}-->
 <!--                  {{item.title}}-->
                   <div class="articleInfo">
-                    <div class="articleTitle" @click="redirectArticleIndex(itemIndex)">
+                    <div class="articleTitle" @click="redirectArticleIndex(item.articleId)">
                       <span>{{item.title}}</span>
                     </div>
                     <div class="articleOther">
@@ -187,7 +187,8 @@ const handleCurrentChange = () => {
 }
 
 const redirectArticleIndex = (e) => {
-  store.commit('articleModule/updateArticleIndex',e)
+  store.commit('articleModule/updateArticleId_pre',e)
+  store.dispatch('articleModule/getArticleCatalogue')
   router.push('/article')
 }
 

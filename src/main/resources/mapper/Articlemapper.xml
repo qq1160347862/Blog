@@ -60,4 +60,14 @@
             pub_date=#{pubDate},recommend=#{recommend},sort_id=#{sortId}
         WHERE article_id=#{articleId}
     </update>
+
+    <select id="getArticleById" resultMap="ArticleIdAndUserName">
+        SELECT  user_name as userName,title,content,articles.article_id as articleId,
+                history_count as historyCount,label_name as labelName,
+                pub_date as pubDate,articles.sort_id as sortId,sort_name as sortName,
+                recommend
+        FROM users,articles,sorts,labels
+        WHERE users.user_id = articles.user_id and sorts.sort_id = articles.sort_id
+          and articles.label_id = labels.label_id and article_id = #{articleId}
+    </select>
 </mapper>

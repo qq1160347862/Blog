@@ -1,17 +1,20 @@
 import {
-    ArticleByPage,
+    ArticleByPage, getArticleById,
     getArticleByPage,
     getArticleByPageByHistory,
-    getArticleByPageByRecommend,
+    getArticleByPageByRecommend, getArticleCatalogue,
     LikeArticleByPage
 } from "@/request/api/article";
 
 const articleModule = {
     namespaced:true,
     state:{
-        articleList:[],
-        articleIndex:0,
-        total:0,
+        articleList:[], //分页文章列表
+        total:0,        //分页文章总数
+
+        articleCatalogue:[],//文章目录
+        article_pre:{},                  //预览文章
+        articleId_pre:0,    //预览文章ID
 
         //管理层
         article:[],
@@ -21,11 +24,17 @@ const articleModule = {
         updateArticleList(state,value){
             state.articleList = value
         },
-        updateArticleIndex(state,value){
-            state.articleIndex = value
-        },
         updateTotal(state,value){
             state.total = value
+        },
+        updateArticleCatalogue(state,value){
+            state.articleCatalogue = value
+        },
+        updateArticle_pre(state,value){
+            state.article_pre = value
+        },
+        updateArticleId_pre(state,value){
+            state.articleId_pre = value
         },
         updateArticle(state,value){
             state.article = value
@@ -38,8 +47,8 @@ const articleModule = {
         //默认按时间排序
         async getArticleList(context,value){
 
-
             let res = await getArticleByPage(value)
+            console.log(res)
             if (res.data.code === 2000){
                 let tempList = []
                 for (let i = 0; i < res.data.data.articleByPage.records.length; i++){
@@ -88,6 +97,27 @@ const articleModule = {
                 console.log("数据获取失败")
             }
         },
+
+        //查询文章目录
+        async getArticleCatalogue(context,value){
+            let res = await getArticleCatalogue()
+            if (res.data.code === 2000){
+                context.commit('updateArticleCatalogue',res.data.data.articleCatalogue)
+            }else {
+                console.log("数据获取失败")
+            }
+        },
+        //根据ID查询文章
+        async getArticleById(context,value){
+            let res = await getArticleById(value)
+            if (res.data.code === 2000){
+                context.commit('updateArticle_pre',res.data.data.article)
+            }else {
+                console.log("数据获取失败")
+            }
+        },
+
+        /*****************************      管理层     ***********************/
 
         //分页获取文章(无条件)
         async getArticleByPage(context,value){

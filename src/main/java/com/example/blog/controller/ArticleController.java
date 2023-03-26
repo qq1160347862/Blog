@@ -60,6 +60,19 @@ public class ArticleController {
         return  result;
     }
 
+    //获取文章目录(ID,title)
+    @GetMapping("/article/getArticleCatalogue")
+    public Result getArticleCatalogue(){
+        Result result = articleService.getArticleCatalogue();
+        return result;
+    }
+    //根据ID查询文章
+    @GetMapping("/article/getArticleById")
+    public Result getArticleById(@Param("articleId") int articleId){
+        Result result = articleService.getArticleById(articleId);
+        return result;
+    }
+
 
 
     @PostMapping("/article")
@@ -82,9 +95,8 @@ public class ArticleController {
 
     //测试接口
     @GetMapping("/article/test")
-    public Result test(@Param("current") int current,
-                                   @Param("size") int size){
-        Result result = articleService.testService(current,size);
+    public Result test(){
+        Result result = articleService.testService();
         return result;
     }
 }

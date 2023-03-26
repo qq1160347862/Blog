@@ -9,25 +9,25 @@
 <!--              {{store.state.articleModule.articleList[articleIndex].title}}-->
               <span>
                 <el-icon><Notebook/></el-icon>
-                {{store.state.articleModule.articleList[articleIndex].labelName}}
+                {{store.state.articleModule.article_pre.labelName}}
               </span>
               <span>
                 <el-icon><FolderOpened/></el-icon>
-                {{store.state.articleModule.articleList[articleIndex].sortName}}
+                {{store.state.articleModule.article_pre.sortName}}
               </span>
               <span>
                 <el-icon><Calendar/></el-icon>
-                {{store.state.articleModule.articleList[articleIndex].pubDate.substring(0,10)}}
+                {{store.state.articleModule.article_pre.pubDate.substring(0,10)}}
               </span>
               <span>
                 <el-icon><UserFilled/></el-icon>
-                {{store.state.articleModule.articleList[articleIndex].userName}}
+                {{store.state.articleModule.article_pre.userName}}
               </span>
 
             </div>
             <div class="articleCardContent">
               <div class="articlesTitle">
-                {{store.state.articleModule.articleList[articleIndex].title}}
+                {{store.state.articleModule.article_pre.title}}
               </div>
               <div class="articleContent">
                 <Editor
@@ -43,10 +43,10 @@
             <div class="articleCardBottom">
               <div class="lastArticle">
                 <el-icon><Back/></el-icon>
-                <span>{{store.state.articleModule.articleList[(articleIndex - 1 + store.state.articleModule.articleList.length) % store.state.articleModule.articleList.length].title}}</span>
+                <span>{{"上一页"}}</span>
               </div>
               <div class="nextArticle">
-                <span>{{store.state.articleModule.articleList[(articleIndex + 1 + store.state.articleModule.articleList.length) % store.state.articleModule.articleList.length].title}}</span>
+                <span>{{"下一页"}}</span>
                 <el-icon><Right/></el-icon>
               </div>
             </div>
@@ -95,25 +95,22 @@ import headerNav from "@/components/headerNav";
 import {Back,Right,Promotion,CoffeeCup,UserFilled,Calendar,FolderOpened,Notebook} from '@element-plus/icons-vue'
 import store from '@/store'
 import $ from "jquery";
-import {onMounted, onUpdated, ref, shallowRef} from "vue";
+import {onBeforeUpdate, onMounted, onUpdated, ref, shallowRef} from "vue";
 let elScroll = ref()
 let isShowTopNav = false
-let articleIndex = store.state.articleModule.articleIndex
-console.log(articleIndex)
 const editorRef = shallowRef()
 let mode = 'default'
 const valueHtml = ref('')
 const editorConfig = { placeholder: '请输入内容...',MENU_CONF:{}}
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
-  editorRef.value.setHtml(store.state.articleModule.articleList[articleIndex].content)
+  setTimeout(()=>{
+    editorRef.value.setHtml(store.state.articleModule.article_pre.content)
+  },500)
+
   editor.disable()
   // editor.fullScreen()
 }
-onUpdated(() => {
-
-  // editorRef.value.disable()
-})
 
 
 const scroll = (e) => {
@@ -127,7 +124,12 @@ const scroll = (e) => {
     $(".headerContainer").css("background-color",color)
   }
 }
+
+
+//获取文章
+store.dispatch('articleModule/getArticleById',store.state.articleModule.articleId_pre)
 </script>
+
 <style scoped>
 .articleArea{
   height: 100vh;

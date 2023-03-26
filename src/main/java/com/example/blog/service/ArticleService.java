@@ -110,6 +110,30 @@ public class ArticleService {
         }
     }
 
+    //获取文章所有ID
+    public Result getArticleCatalogue(){
+        List<Article> list = articleMapper.getAllArticleId();
+        if (!list.isEmpty()){
+            message = "查询目录";
+            return Result.ok(message).data("articleCatalogue",list);
+        }else {
+            message= "目录未查询到";
+            return Result.ok(message).data("articleCatalogue",null);
+        }
+
+    }
+    //根据ID查询文章
+    public Result getArticleById(int id){
+        ArticleUserSortVo article = articleMapper.getArticleById(id);
+        if (article.getArticleId() !=null){
+            message = "查询文章";
+            return Result.ok(message).data("article",article);
+        }else {
+            message = "文章未查询到";
+            return Result.ok(message).data("article",null);
+        }
+    }
+
     public Result addArticle(Article article){
         articleMapper.addArticle(article.getTitle(),
                                 article.getContent(),
@@ -142,15 +166,17 @@ public class ArticleService {
     }
 
     //测试接口
-    public Result testService(int current, int size){
+    public Result testService(){
         //设置页数和数据Size
 
-        Page<Article> page = new Page<>(current,size);
-        IPage<Article> iPage = articleMapper.selectPage(page,null);
+//        Page<Article> page = new Page<>(current,size);
+//        IPage<Article> iPage = articleMapper.selectPage(page,null);
 //        List<Integer> list = new ArrayList<>();
 //        list.add(1);
 //        articleMapper.deleteBatchIds(list);
-        System.out.println(iPage.getRecords());
-        return Result.ok().data("page",iPage);
+//        System.out.println(iPage.getRecords());
+        List<Article> list = articleMapper.getAllArticleId();
+
+        return Result.ok().data("list",list);
     }
 }
