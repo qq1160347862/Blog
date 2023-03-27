@@ -72,6 +72,12 @@ public class ArticleController {
         Result result = articleService.getArticleById(articleId);
         return result;
     }
+    //获取分类目录
+    @GetMapping("/article/getArticleAndSort")
+    public Result getArticleAndSort(@Param("sortId") int sortId){
+        Result result = articleService.getArticleAndSort(sortId);
+        return result;
+    }
 
 
 
@@ -95,8 +101,8 @@ public class ArticleController {
 
     //测试接口
     @GetMapping("/article/test")
-    public Result test(){
-        Result result = articleService.testService();
+    public Result test(@Param("sortId") int sortId){
+        Result result = articleService.testService(sortId);
         return result;
     }
 }

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.Utils.Result;
 import com.example.blog.entity.Article;
 import com.example.blog.entity.ArticleTools.IdList;
+import com.example.blog.entity.Vo.ArticleSortVo;
 import com.example.blog.entity.Vo.ArticleUserSortVo;
 import com.example.blog.mapper.ArticleMapper;
 import org.apache.ibatis.annotations.Param;
@@ -134,6 +135,18 @@ public class ArticleService {
         }
     }
 
+    //获取分类目录
+    public Result getArticleAndSort(int id){
+        List<ArticleSortVo> list = articleMapper.getArticleAndSort(id);
+        if (!list.isEmpty()){
+            message = "查询分类目录";
+            return Result.ok(message).data("sortCatalogue",list);
+        }else {
+            message = "分类目录未查询到";
+            return Result.ok(message).data("sortCatalogue",null);
+        }
+    }
+
     public Result addArticle(Article article){
         articleMapper.addArticle(article.getTitle(),
                                 article.getContent(),
@@ -166,7 +179,7 @@ public class ArticleService {
     }
 
     //测试接口
-    public Result testService(){
+    public Result testService(int id){
         //设置页数和数据Size
 
 //        Page<Article> page = new Page<>(current,size);
@@ -175,8 +188,8 @@ public class ArticleService {
 //        list.add(1);
 //        articleMapper.deleteBatchIds(list);
 //        System.out.println(iPage.getRecords());
-        List<Article> list = articleMapper.getAllArticleId();
-
+//        List<Article> list = articleMapper.getAllArticleId();
+        List<ArticleSortVo> list = articleMapper.getArticleAndSort(id);
         return Result.ok().data("list",list);
     }
 }

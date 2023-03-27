@@ -15,6 +15,13 @@
         <result property="sortName" column="sortName" jdbcType="VARCHAR"></result>
     </resultMap>
 
+    <resultMap id="ArticleAndSort" type="com.example.blog.entity.Vo.ArticleSortVo">
+        <result property="articleId" column="articleId" jdbcType="INTEGER"></result>
+        <result property="title" column="title" jdbcType="VARCHAR"></result>
+        <result property="sortName" column="sortName" jdbcType="VARCHAR"></result>
+        <result property="sortId" column="sortId" jdbcType="INTEGER"></result>
+    </resultMap>
+
 <!--    这里如果不用 as 映射和Bean类属性名一致，则返回结果为空-->
     <select id="findArticlesAndUserNameAndSortName" resultMap="ArticleIdAndUserName">
         SELECT  user_name as userName,title,content,articles.article_id as articleId,
@@ -69,5 +76,11 @@
         FROM users,articles,sorts,labels
         WHERE users.user_id = articles.user_id and sorts.sort_id = articles.sort_id
           and articles.label_id = labels.label_id and article_id = #{articleId}
+    </select>
+
+    <select id="getArticleAndSort" resultMap="ArticleAndSort">
+        SELECT article_id as articleId,title,sort_name as sortName,sorts.sort_id as sortId
+        FROM sorts,articles
+        where articles.sort_id = sorts.sort_id and sorts.sort_id = #{sortId}
     </select>
 </mapper>

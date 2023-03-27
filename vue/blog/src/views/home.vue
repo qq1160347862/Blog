@@ -28,8 +28,7 @@
                 </ul>
               </div>
               <div class="articleArea">
-                <div class="articleCard" v-for="item in store.state.articleModule.articleList"
-                    >
+                <div class="articleCard" v-for="item in store.state.articleModule.articleList">
 <!--                  {{item.articleId}}-->
 <!--                  {{item.title}}-->
                   <div class="articleInfo">
@@ -202,6 +201,7 @@ const scroll = (e) => {
     isShowTopNav = false
     $(".headerContainer").css("background-color",color)
   }
+
 }
 
 //懒加载
@@ -215,12 +215,10 @@ const callBack = (entries)=>{
     const divTarget = entry.target
     //元素与窗口出现交叉
     if (entry.isIntersecting){
-
       divTarget.setAttribute('style','opacity: 1;transform: translateY(10px)')
-      // observer.unobserve(divTarget)
-      console.log("触发")
+      observer.value.unobserve(divTarget)
     }else {
-      divTarget.setAttribute('style','opacity: 0;transform: translateY(50px)')
+
     }
   })
 }
@@ -570,4 +568,5 @@ onMounted(() => {
   height: 3rem;
 
 }
+
 </style>

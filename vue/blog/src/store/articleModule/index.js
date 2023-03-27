@@ -1,5 +1,5 @@
 import {
-    ArticleByPage, getArticleById,
+    ArticleByPage, getArticleAndSort, getArticleById,
     getArticleByPage,
     getArticleByPageByHistory,
     getArticleByPageByRecommend, getArticleCatalogue,
@@ -12,9 +12,9 @@ const articleModule = {
         articleList:[], //分页文章列表
         total:0,        //分页文章总数
 
-        articleCatalogue:[],//文章目录
-        article_pre:{},                  //预览文章
-        articleId_pre:0,    //预览文章ID
+        articleCatalogue:[],                //文章目录
+        article_pre:{},                     //预览文章
+        articleId_pre:0,                    //预览文章ID
         articleId_last:{
             index:0,
             id:0,
@@ -23,6 +23,8 @@ const articleModule = {
             index:0,
             id:0,
         },
+
+        articleSortCatalogue:[],//分类目录,类别1目录,类别2目录...
 
         //管理层
         article:[],
@@ -46,6 +48,9 @@ const articleModule = {
         updateArticleId_pre(state,value){
             state.articleId_pre = value
         },
+        updateArticleSortCatalogue(state,value){
+            state.articleSortCatalogue = value
+        },
         updateArticle(state,value){
             state.article = value
         },
@@ -57,7 +62,6 @@ const articleModule = {
 
         //查找上一页和下一页
         selectLastAndNext(state,value){
-            console.log("查找")
             for (let i = 0; i < state.articleCatalogue.length; i++){
                 if (state.articleId_pre === state.articleCatalogue[i].articleId){
                     state.articleId_last = {
@@ -145,10 +149,23 @@ const articleModule = {
                 context.commit('updateArticle_pre',res.data.data.article)
                 context.commit('updateArticleId_pre',res.data.data.article.articleId)
                 context.commit('selectLastAndNext')
-                console.log(context.state.articleId_last.id,"+",context.state.articleId_next.id)
             }else {
                 console.log("数据获取失败")
             }
+        },
+        //获取分类目录
+        async getArticleAndSort(context){
+            let tempList = []
+            await context.rootState.sortModule.sortList.forEach( (item) => {
+                getArticleAndSort(item.sortId).then((res) => {
+                    if (res.data.code === 2000){
+                        tempList.push(res.data.data.sortCatalogue)
+                    }else {
+                        console.log("数据获取失败")
+                    }
+                })
+            } )
+            context.commit('updateArticleSortCatalogue',tempList)
         },
 
 

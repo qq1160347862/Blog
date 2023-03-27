@@ -53,6 +53,16 @@ export const getArticleById = (data) => {
       }
   })
 }
+//获取分类目录
+export const getArticleAndSort = (data) => {
+  return service({
+      method:"GET",
+      url:"/article/getArticleAndSort",
+      params:{
+          sortId:data
+      }
+  })
+}
 
 
 /************************ 管理层 *******************************/

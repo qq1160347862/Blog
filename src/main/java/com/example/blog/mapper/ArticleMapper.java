@@ -3,6 +3,7 @@ package com.example.blog.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.blog.entity.Article;
+import com.example.blog.entity.Vo.ArticleSortVo;
 import com.example.blog.entity.Vo.ArticleUserSortVo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -40,6 +41,8 @@ public interface ArticleMapper extends BaseMapper<Article> {
     List<Article> getAllArticleId();
 
     ArticleUserSortVo getArticleById(@Param("articleId") Integer articleId);
+
+    List<ArticleSortVo> getArticleAndSort(@Param("sortId") Integer sortId);
 }
 
 

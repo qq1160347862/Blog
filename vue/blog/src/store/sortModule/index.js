@@ -5,6 +5,9 @@ import {LabelByPage} from "@/request/api/label";
 const sortModule = {
     namespaced:true,
     state:{
+
+
+        //管理层
         sortList:[],//下拉框数据
 
         //分类管理数据
