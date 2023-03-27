@@ -15,6 +15,14 @@ const articleModule = {
         articleCatalogue:[],//文章目录
         article_pre:{},                  //预览文章
         articleId_pre:0,    //预览文章ID
+        articleId_last:{
+            index:0,
+            id:0,
+        },
+        articleId_next:{
+            index:0,
+            id:0,
+        },
 
         //管理层
         article:[],
@@ -32,6 +40,8 @@ const articleModule = {
         },
         updateArticle_pre(state,value){
             state.article_pre = value
+            //时间处理
+            state.article_pre.pubDate = state.article_pre.pubDate.substring(0,10)
         },
         updateArticleId_pre(state,value){
             state.articleId_pre = value
@@ -42,13 +52,34 @@ const articleModule = {
         updateArticleTotal(state,value){
             state.articleTotal = value
         },
+
+
+
+        //查找上一页和下一页
+        selectLastAndNext(state,value){
+            console.log("查找")
+            for (let i = 0; i < state.articleCatalogue.length; i++){
+                if (state.articleId_pre === state.articleCatalogue[i].articleId){
+                    state.articleId_last = {
+                        index: (i - 1 + state.articleCatalogue.length) % state.articleCatalogue.length,
+                        id: state.articleCatalogue[(i - 1 + state.articleCatalogue.length) % state.articleCatalogue.length].articleId
+                    }
+                    state.articleId_next = {
+                        index: (i + 1 + state.articleCatalogue.length) % state.articleCatalogue.length,
+                        id: state.articleCatalogue[(i + 1 + state.articleCatalogue.length) % state.articleCatalogue.length].articleId
+                    }
+                    break
+                }
+            }
+        },
+
+
     },
     actions:{
         //默认按时间排序
         async getArticleList(context,value){
 
             let res = await getArticleByPage(value)
-            console.log(res)
             if (res.data.code === 2000){
                 let tempList = []
                 for (let i = 0; i < res.data.data.articleByPage.records.length; i++){
@@ -112,10 +143,14 @@ const articleModule = {
             let res = await getArticleById(value)
             if (res.data.code === 2000){
                 context.commit('updateArticle_pre',res.data.data.article)
+                context.commit('updateArticleId_pre',res.data.data.article.articleId)
+                context.commit('selectLastAndNext')
+                console.log(context.state.articleId_last.id,"+",context.state.articleId_next.id)
             }else {
                 console.log("数据获取失败")
             }
         },
+
 
         /*****************************      管理层     ***********************/
 

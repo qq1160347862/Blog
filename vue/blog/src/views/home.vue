@@ -29,7 +29,7 @@
               </div>
               <div class="articleArea">
                 <div class="articleCard" v-for="item in store.state.articleModule.articleList"
-                    :key="item.articleId">
+                    >
 <!--                  {{item.articleId}}-->
 <!--                  {{item.title}}-->
                   <div class="articleInfo">
@@ -109,7 +109,7 @@
 <script setup>
 import headerNav from "@/components/headerNav";
 import {Top,Promotion,CoffeeCup,UserFilled,Calendar,FolderOpened,Notebook} from '@element-plus/icons-vue'
-import {onMounted, ref, reactive} from 'vue'
+import {onMounted, ref, reactive, onUpdated, onBeforeUpdate} from 'vue'
 import $ from 'jquery'
 import store from '@/store'
 import {useRouter} from "vue-router"
@@ -203,6 +203,39 @@ const scroll = (e) => {
     $(".headerContainer").css("background-color",color)
   }
 }
+
+//懒加载
+//  IntersectionObserver API只能设置一次，一次可以监听多个元素，但是对于v-for 生产不同
+//  的div，他们的唯一标识不同，不能实现所有div元素懒加载
+//  解决方法为，把v-for div 的:key属性清除，但是不能保证之后的功能实现与之冲突
+const observer = ref()
+const articleDiv = ref()
+const callBack = (entries)=>{
+  entries.forEach( entry => {
+    const divTarget = entry.target
+    //元素与窗口出现交叉
+    if (entry.isIntersecting){
+
+      divTarget.setAttribute('style','opacity: 1;transform: translateY(10px)')
+      // observer.unobserve(divTarget)
+      console.log("触发")
+    }else {
+      divTarget.setAttribute('style','opacity: 0;transform: translateY(50px)')
+    }
+  })
+}
+onMounted(() => {
+  // articleDiv.value = document.querySelectorAll(".articleCard")
+  articleDiv.value = document.getElementsByClassName("articleCard")
+
+  console.log("OnMounted")
+  console.log(articleDiv.value)
+  observer.value = new IntersectionObserver(callBack)
+  for (let i = 0; i < articleDiv.value.length; i++) {
+    observer.value.observe(articleDiv.value[i])
+  }
+})
+
 //背景图轮换
 onMounted(() => {
   // setInterval(()=>{
@@ -394,9 +427,11 @@ onMounted(() => {
   background-color: white;
   margin-bottom: 3rem;
   border-radius: .8rem;
-
-  display: flex;
+  opacity: 0.5;
+  display:flex;
   flex-direction: column;
+
+  transform: translateY(50px);
 
   transition: 0.2s;
 }

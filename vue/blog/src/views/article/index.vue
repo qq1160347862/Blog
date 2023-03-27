@@ -17,7 +17,7 @@
               </span>
               <span>
                 <el-icon><Calendar/></el-icon>
-                {{store.state.articleModule.article_pre.pubDate.substring(0,10)}}
+                {{store.state.articleModule.article_pre.pubDate}}
               </span>
               <span>
                 <el-icon><UserFilled/></el-icon>
@@ -43,10 +43,14 @@
             <div class="articleCardBottom">
               <div class="lastArticle">
                 <el-icon><Back/></el-icon>
-                <span>{{"上一页"}}</span>
+                <span @click="updateArticlePre(store.state.articleModule.articleId_last.id)">
+                  {{store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_last.index].title}}
+                </span>
               </div>
               <div class="nextArticle">
-                <span>{{"下一页"}}</span>
+                <span @click="updateArticlePre(store.state.articleModule.articleId_next.id)">
+                  {{store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_next.index].title}}
+                </span>
                 <el-icon><Right/></el-icon>
               </div>
             </div>
@@ -124,7 +128,10 @@ const scroll = (e) => {
     $(".headerContainer").css("background-color",color)
   }
 }
-
+const updateArticlePre = async (id) => {
+  await store.dispatch('articleModule/getArticleById',id)   //修改当前页文章
+  editorRef.value.setHtml(store.state.articleModule.article_pre.content)
+}
 
 //获取文章
 store.dispatch('articleModule/getArticleById',store.state.articleModule.articleId_pre)
