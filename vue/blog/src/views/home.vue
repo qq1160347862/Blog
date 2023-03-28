@@ -32,8 +32,10 @@
 <!--                  {{item.articleId}}-->
 <!--                  {{item.title}}-->
                   <div class="articleInfo">
-                    <div class="articleTitle" @click="redirectArticleIndex(item.articleId)">
-                      <span>{{item.title}}</span>
+                    <div class="articleTitle">
+                      <span  @click="redirectArticleIndex(item.articleId)">
+                        {{item.title}}
+                      </span>
                     </div>
                     <div class="articleOther">
                       <span>
@@ -208,31 +210,31 @@ const scroll = (e) => {
 //  IntersectionObserver API只能设置一次，一次可以监听多个元素，但是对于v-for 生产不同
 //  的div，他们的唯一标识不同，不能实现所有div元素懒加载
 //  解决方法为，把v-for div 的:key属性清除，但是不能保证之后的功能实现与之冲突
-const observer = ref()
-const articleDiv = ref()
-const callBack = (entries)=>{
-  entries.forEach( entry => {
-    const divTarget = entry.target
-    //元素与窗口出现交叉
-    if (entry.isIntersecting){
-      divTarget.setAttribute('style','opacity: 1;transform: translateY(10px)')
-      observer.value.unobserve(divTarget)
-    }else {
-
-    }
-  })
-}
-onMounted(() => {
-  // articleDiv.value = document.querySelectorAll(".articleCard")
-  articleDiv.value = document.getElementsByClassName("articleCard")
-
-  console.log("OnMounted")
-  console.log(articleDiv.value)
-  observer.value = new IntersectionObserver(callBack)
-  for (let i = 0; i < articleDiv.value.length; i++) {
-    observer.value.observe(articleDiv.value[i])
-  }
-})
+// const observer = ref()
+// const articleDiv = ref()
+// const callBack = (entries)=>{
+//   entries.forEach( entry => {
+//     const divTarget = entry.target
+//     //元素与窗口出现交叉
+//     if (entry.isIntersecting){
+//       divTarget.setAttribute('style','opacity: 1;transform: translateY(10px)')
+//       observer.value.unobserve(divTarget)
+//     }else {
+//
+//     }
+//   })
+// }
+// onMounted(() => {
+//   articleDiv.value = document.querySelectorAll(".articleCard")
+//   // articleDiv.value = document.getElementsByClassName("articleCard")
+//
+//   console.log("OnMounted")
+//   console.log(articleDiv.value)
+//   observer.value = new IntersectionObserver(callBack)
+//   for (let i = 0; i < articleDiv.value.length; i++) {
+//     observer.value.observe(articleDiv.value[i])
+//   }
+// })
 
 //背景图轮换
 onMounted(() => {
@@ -425,11 +427,11 @@ onMounted(() => {
   background-color: white;
   margin-bottom: 3rem;
   border-radius: .8rem;
-  opacity: 0.5;
+  opacity: 1;
   display:flex;
   flex-direction: column;
 
-  transform: translateY(50px);
+  /*transform: translateY(50px);*/
 
   transition: 0.2s;
 }
@@ -452,6 +454,9 @@ onMounted(() => {
   margin-left: 1rem;
   font-size: 1.6rem;
   margin-top: 2rem;
+
+}
+.articleTitle>span {
   cursor: pointer;
 }
 .articleTitle>span:hover {

@@ -156,15 +156,16 @@ const articleModule = {
         //获取分类目录
         async getArticleAndSort(context){
             let tempList = []
-            await context.rootState.sortModule.sortList.forEach( (item) => {
-                getArticleAndSort(item.sortId).then((res) => {
-                    if (res.data.code === 2000){
-                        tempList.push(res.data.data.sortCatalogue)
-                    }else {
-                        console.log("数据获取失败")
-                    }
-                })
-            } )
+            // let index_fix = 0
+            //  用forEach发请求，无法确保多个请求的then会按顺序返回
+            for (let i = 0; i < context.rootState.sortModule.sortList.length; i++) {
+                let res = await getArticleAndSort(context.rootState.sortModule.sortList[i].sortId)
+                if (res.data.code === 2000){
+                    tempList.push(res.data.data.sortCatalogue)
+                }else {
+                    console.log("数据获取失败")
+                }
+            }
             context.commit('updateArticleSortCatalogue',tempList)
         },
 

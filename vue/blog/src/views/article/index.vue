@@ -12,12 +12,20 @@
             </div>
             <el-scrollbar>
               <div class="CatalogueItem" v-for="(item,index) in store.state.sortModule.sortList">
-                <span>{{item.sortName}}</span>
-                <div class="CatalogueItemArticle" v-show="store.state.articleModule.articleSortCatalogue[index] !== null" v-for="item2 in store.state.articleModule.articleSortCatalogue[index]">
-                  {{item2.title}}
+                <span  @click="SortIsOpen(index)">
+                  <el-icon v-show="!isOpen_sort[index]"><CaretRight /></el-icon>
+                  <el-icon v-show="isOpen_sort[index]"><CaretBottom /></el-icon>
+                  {{item.sortName}}
+                </span>
+                <div :class="'CatalogueItemArticle'+index"
+                     id="CatalogueItemArticle"
+                     v-show="store.state.articleModule.articleSortCatalogue[index] !== null"
+                     v-for="(item2,index2) in store.state.articleModule.articleSortCatalogue[index]"
+                     @click="updateArticlePre(item2.articleId)">
+                  <span>{{item2.title}}</span>
                 </div>
-                <div class="CatalogueItemArticle" v-show="store.state.articleModule.articleSortCatalogue[index] === null">
-                  {{"没有此类别文章"}}
+                <div :class="'CatalogueItemArticle'+index" id="CatalogueItemArticle" v-show="store.state.articleModule.articleSortCatalogue[index] === null">
+                  <span>{{"没有此类别文章"}}</span>
                 </div>
               </div>
             </el-scrollbar>
@@ -100,6 +108,13 @@
               </div>
             </div>
           </div>
+          <div class="articleContentCatalogue">
+            <catalogue :headers="headers"
+                       :scrollContinerDom="scrollDom"
+                       :scrollToFirstHeader="0"
+                       :clickDistance="0"
+                       class="catalogue"></catalogue>
+          </div>
         </div>
         <el-backtop target=".el-scrollbar__wrap"  :right="40" :bottom="40"></el-backtop>
       </el-scrollbar>
@@ -113,24 +128,63 @@ export default {
 }
 </script>
 <script setup>
+import catalogue from 'wangeditor-catalogue'
+import 'wangeditor-catalogue/css'
 import '@wangeditor/editor/dist/css/style.css'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import headerNav from "@/components/headerNav";
-import {Folder,Back,Right,Promotion,CoffeeCup,UserFilled,Calendar,FolderOpened,Notebook} from '@element-plus/icons-vue'
+import {CaretRight,CaretBottom,Folder,Back,Right,Promotion,CoffeeCup,UserFilled,Calendar,FolderOpened,Notebook} from '@element-plus/icons-vue'
 import store from '@/store'
 import $ from "jquery";
-import {onBeforeUpdate, onMounted, onUpdated, ref, shallowRef} from "vue";
+import {onBeforeUpdate, onMounted, onUpdated, reactive, ref, shallowRef} from "vue";
 let elScroll = ref()
 let isShowTopNav = false
 const editorRef = shallowRef()
 let mode = 'default'
 let isOpen = ref(false)
+let isOpen_sort = reactive([])
+for (let i = 0; i < store.state.sortModule.sortList.length; i++) {
+  isOpen_sort.push(false)
+}
+
 const valueHtml = ref('')
 const editorConfig = { placeholder: '请输入内容...',MENU_CONF:{}}
+const headers = ref()
+const scrollDom = ref()
+//获取挂载后的组件,并设置动态跟随效果
+onMounted(()=>{
+  scrollDom.value = document.getElementsByClassName(`el-scrollbar__wrap`).item(0)
+  let scrollTimer;
+  document.getElementsByClassName(`el-scrollbar__wrap`).item(0).addEventListener("scroll", function (e){
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => {
+      let doe = document.getElementsByClassName(`el-scrollbar__wrap`).item(0)
+      const list = $(`.cata_list`);
+      /* 遍历每一个标题，比较标题距离顶部的距离和滚动条滚动的距离
+      如果遍历到第一个大于滚动条滚动的距离，那么该标题就是活跃标题 */
+      for (let i = 0; i < list.length; i++) {
+        const curHead = document.querySelector(`#${list[i].id}`);
+        if (curHead.offsetTop + 0 > doe.scrollTop && i > 0) {
+          list[i - 1].setAttribute("style","color: #0080ff;\n" +
+              "       border-left: 2px solid #0080ff;transition: 0.3s;")
+          for (let j = 0; j < list.length; j++) {
+            if (j != (i - 1)){
+              list[j].setAttribute("style","color: #000000;\n" +
+                  "       border-left: 2px solid #e0e0e0;transition: 0.3s;")
+            }
+          }
+          break;
+        }
+      }
+    }, 100);
+  })
+})
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
   setTimeout(()=>{
     editorRef.value.setHtml(store.state.articleModule.article_pre.content)
+    //获取文章标题H1、H2...
+    headers.value = editor.getElemsByTypePrefix("header")
   },500)
 
   editor.disable()
@@ -143,13 +197,23 @@ const CatalogueIsOpen = () => {
     $(".articleCatalogueIsOpen").toggleClass("active")
     $(".Catalogue").toggleClass("active")
     $(".CatalogueItem").toggleClass("active")
+    // $(".CatalogueItemArticle").toggleClass("active")
   }else {
     $(".articleCatalogue").toggleClass("active")
     $(".articleCatalogueIsOpen").toggleClass("active")
     $(".Catalogue").toggleClass("active")
     $(".CatalogueItem").toggleClass("active")
+    // $(".CatalogueItemArticle").toggleClass("active")
   }
   isOpen.value = !isOpen.value
+}
+const SortIsOpen = (index) => {
+  if (!isOpen_sort[index]){
+    $(".CatalogueItemArticle"+index).toggleClass("active")
+  }else {
+    $(".CatalogueItemArticle"+index).toggleClass("active")
+  }
+  isOpen_sort[index] = !isOpen_sort[index]
 }
 const scroll = (e) => {
   if (e.scrollTop > 16 && !isShowTopNav){
@@ -165,6 +229,7 @@ const scroll = (e) => {
 const updateArticlePre = async (id) => {
   await store.dispatch('articleModule/getArticleById',id)   //修改当前页文章
   editorRef.value.setHtml(store.state.articleModule.article_pre.content)
+  headers.value = editorRef.value.getElemsByTypePrefix("header")
 }
 
 //获取文章以及分类目录
@@ -258,7 +323,8 @@ store.dispatch('articleModule/getArticleAndSort')
   background-color: #FFFFFF;
   position: fixed;
   transition: 0.3s;
-  border-radius: .3rem;
+  border-top-right-radius: .3rem;
+  border-bottom-right-radius: .3rem;
 }
 .active.articleCatalogue{
   width: 15rem;
@@ -315,35 +381,63 @@ store.dispatch('articleModule/getArticleAndSort')
   transition: 0.1s;
   cursor: auto;
 }
-.CatalogueItem>span{
-  margin-left: 1rem;
-}
 .active.CatalogueItem{
   display: block;
   opacity: 1;
   transition: 0.3s 0.9s;
-  cursor: auto;
+  cursor: pointer;
 }
-.CatalogueItemArticle{
-  font-size: 1rem;
-  margin-top: .5rem;
-  padding-left: 1.5rem;
-  height: 2rem;
+.CatalogueItem>span{
+  margin-left: 1rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
 }
-.CatalogueItemArticle {
-
+#CatalogueItemArticle{
+  font-size: 1rem;
+  padding-left: 1.5rem;
+  height: 0;
+  display: flex;
+  align-items: center;
+  transition: 0.3s 0.3s;
 }
-.CatalogueItemArticle:hover {
+#CatalogueItemArticle span {
+  opacity: 0;
+  transition: 0.3s,transform 0s 0.3s;
+  cursor: default;
+  transform: translateX(-500px);
+}
+#CatalogueItemArticle:hover {
   color: #3c99f6;
   cursor: pointer;
   background-color: rgba(241, 240, 240, 0.8);
 }
+.active#CatalogueItemArticle {
+  height: 2rem;
 
-
+  transition: 0.3s;
+}
+.active#CatalogueItemArticle span {
+  opacity: 1;
+  cursor: pointer;
+  transition: 0.3s 0.3s,transform 0s;
+  transform: translateX(0);
+}
 .articleCatalogue>>>.el-scrollbar__bar.is-vertical{
   width: 0;
+}
+
+.articleContentCatalogue {
+  width: 16rem;
+  margin-top: 1.6rem;
+  background-color: rgba(255, 255, 255, 0.75);
+  position: fixed;
+  right: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: .8rem;
+  box-shadow: 0 0 8px 2px #FFFFFF;
 }
 /*************************** 底部样式 ********************/
 .links {
