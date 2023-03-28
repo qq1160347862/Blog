@@ -41,59 +41,44 @@ import musicPlayer from "@/components/musicPlayer"
 import store from "@/store";
 import {onMounted} from "vue";
 import Live2D from '@/components/Live2D/index'
-let clickAnimation = document.createElement("div")
-document.body.appendChild(clickAnimation)
-clickAnimation.id = "clickAnimation"
-clickAnimation.className = "clickAnimation"
-clickAnimation.innerHTML = ""
-clickAnimation.target = ""
-clickAnimation.ifDown = false
-
-clickAnimation.onmousedown = (e) =>{
-
-  if(!clickAnimation.ifDown){
-    clickAnimation.ifDown = true
-    clickAnimation.style.zIndex = 1000
-    clickAnimation.style.left = e.clientX + "px"
-    clickAnimation.style.top = e.clientY + "px"
 
 
 
-    let temp = document.getElementsByClassName("clickAnimation")
-    for(let i = 0; i < temp.length; i++){
-      temp[i].className = temp[i].className.substring(0,temp[i].className.length-5)
-
-    }
-
-    // temp.classList.add("clickAnimation")
-
-    // clickAnimation.target.onmousedown()
-    document.onmouseup = () =>{
-      if(clickAnimation.ifDown){
-        clickAnimation.ifDown = false
-        let temp = document.getElementsByClassName("clickAnim")
-        for(let i = 0; i < temp.length; i++){
-          temp[i].className = temp[i].className + "ation"
-
-        }
-        // temp.classList.remove("clickAnimation")
-        // clickAnimation.target.onmouseup()
-      }
-      document.onmouseup = null
-    }
-  }
-}
-
-
-let click = (e,target) => {
-  if(!clickAnimation.ifDown){
-    clickAnimation.target = target
-    clickAnimation.onmousedown(e)
-  }
-
-}
 document.onmousedown = (e) =>{
-  click(e,this);
+  let clickAnimation = document.createElement("div")
+  document.body.appendChild(clickAnimation)
+  clickAnimation.className = "clickAnimation"
+  clickAnimation.innerHTML = ""
+  clickAnimation.target = ""
+  clickAnimation.ifDown = false
+
+  let click = (e,target) => {
+    if(!clickAnimation.ifDown){
+      clickAnimation.target = target
+      clickAnimation.onmousedown(e)
+    }
+  }
+  clickAnimation.onmousedown = (e) =>{
+
+    if(!clickAnimation.ifDown){
+      clickAnimation.ifDown = true
+      clickAnimation.style.zIndex = 1000
+      clickAnimation.style.left = e.clientX + "px"
+      clickAnimation.style.top = e.clientY + "px"
+
+      document.onmouseup = () =>{
+        if(clickAnimation.ifDown){
+          clickAnimation.ifDown = false
+        }
+        document.onmouseup = null
+      }
+    }
+    setTimeout(()=>{
+      document.body.removeChild(document.getElementsByClassName("clickAnimation")[0])
+    },1000)
+  }
+
+  click(e,this)
 }
 
 //DOM元素挂载之后执行 下雨特效
@@ -163,39 +148,33 @@ onMounted(() => {
 
 
 <style>
-#clickAnimation {
+.clickAnimation {
+
   pointer-events: none;
   position: fixed;
   left: 0;
   top: 0;
   z-index: -10;
-  transform: translate(-50%,-50%);
+  /*transform: translate(-50%,-50%);*/
   user-select: none;
 
-
-
-}
-.clickAnimation {
-
-
+  background-image: url("assets/floatLogo.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width:24px;
+  height: 24px;
   border-radius: 50%;
-  border: white solid 2px;
-  box-shadow: 0 0 10px white;
-  animation: circle-click-anime 0.2s forwards;
+  animation: circle-click-anime 1s forwards;
 
 }
 @keyframes circle-click-anime {
   0%{
-    width: 0;
-    height: 0;
+    opacity: 1;
+    transform: translate(-50%,-50%);
   }
   100%{
-    width: 100px;
-    height: 100px;
-  }
-  100%{
-    border: 0;
-    box-shadow: 0 0 0 white;
+    opacity: 0;
+    transform: translate(-50%,-50px);
   }
 }
 

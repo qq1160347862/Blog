@@ -108,13 +108,16 @@
               </div>
             </div>
           </div>
-          <div class="articleContentCatalogue">
-            <catalogue :headers="headers"
-                       :scrollContinerDom="scrollDom"
-                       :scrollToFirstHeader="0"
-                       :clickDistance="0"
-                       class="catalogue"></catalogue>
-          </div>
+          <transition name="rec">
+            <div class="articleContentCatalogue" v-if="isShow">
+              <catalogue :headers="headers"
+                         :scrollContinerDom="scrollDom"
+                         :scrollToFirstHeader="0"
+                         :clickDistance="0"
+                         :listId="activeTitle"
+                         class="catalogue"></catalogue>
+            </div>
+          </transition>
         </div>
         <el-backtop target=".el-scrollbar__wrap"  :right="40" :bottom="40"></el-backtop>
       </el-scrollbar>
@@ -150,34 +153,12 @@ for (let i = 0; i < store.state.sortModule.sortList.length; i++) {
 const valueHtml = ref('')
 const editorConfig = { placeholder: '请输入内容...',MENU_CONF:{}}
 const headers = ref()
+let isShow = ref(false)
 const scrollDom = ref()
-//获取挂载后的组件,并设置动态跟随效果
+let activeTitle = ref("")
+//获取挂载后的组件
 onMounted(()=>{
   scrollDom.value = document.getElementsByClassName(`el-scrollbar__wrap`).item(0)
-  let scrollTimer;
-  document.getElementsByClassName(`el-scrollbar__wrap`).item(0).addEventListener("scroll", function (e){
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => {
-      let doe = document.getElementsByClassName(`el-scrollbar__wrap`).item(0)
-      const list = $(`.cata_list`);
-      /* 遍历每一个标题，比较标题距离顶部的距离和滚动条滚动的距离
-      如果遍历到第一个大于滚动条滚动的距离，那么该标题就是活跃标题 */
-      for (let i = 0; i < list.length; i++) {
-        const curHead = document.querySelector(`#${list[i].id}`);
-        if (curHead.offsetTop + 0 > doe.scrollTop && i > 0) {
-          list[i - 1].setAttribute("style","color: #0080ff;\n" +
-              "       border-left: 2px solid #0080ff;transition: 0.3s;")
-          for (let j = 0; j < list.length; j++) {
-            if (j != (i - 1)){
-              list[j].setAttribute("style","color: #000000;\n" +
-                  "       border-left: 2px solid #e0e0e0;transition: 0.3s;")
-            }
-          }
-          break;
-        }
-      }
-    }, 100);
-  })
 })
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
@@ -185,8 +166,12 @@ const handleCreated = (editor) => {
     editorRef.value.setHtml(store.state.articleModule.article_pre.content)
     //获取文章标题H1、H2...
     headers.value = editor.getElemsByTypePrefix("header")
+    if (headers.value.length > 0){
+      isShow.value = true
+    }else {
+      isShow.value = false
+    }
   },500)
-
   editor.disable()
   // editor.fullScreen()
 }
@@ -216,6 +201,7 @@ const SortIsOpen = (index) => {
   isOpen_sort[index] = !isOpen_sort[index]
 }
 const scroll = (e) => {
+
   if (e.scrollTop > 16 && !isShowTopNav){
     let color = "rgba(0, 0, 0, 0.8)"
     isShowTopNav = true
@@ -225,11 +211,38 @@ const scroll = (e) => {
     isShowTopNav = false
     $(".headerContainer").css("background-color",color)
   }
+
+  //设置动态跟随效果
+  let doe = document.getElementsByClassName(`el-scrollbar__wrap`).item(0)
+  const list = $(`.cata_list`);
+  /* 遍历每一个标题，比较标题距离顶部的距离和滚动条滚动的距离
+  如果遍历到第一个大于滚动条滚动的距离，那么该标题就是活跃标题 */
+  for (let i = 0; i < list.length; i++) {
+    const curHead = document.querySelector(`#${list[i].id}`);
+    if (curHead.offsetTop + 0 > doe.scrollTop && i > 0) {
+      // list[i - 1].setAttribute("style","color: #0080ff;\n" +
+      //     "       border-left: 2px solid #0080ff;transition: border-left 0.3s;")
+      // for (let j = 0; j < list.length; j++) {
+      //   if (j != (i - 1)){
+      //     list[j].setAttribute("style","color: #000000;\n" +
+      //         "       border-left: 2px solid #e0e0e0;transition: border-left 0.3s;")
+      //   }
+      // }
+      activeTitle.value = list[i - 1].id;
+      break;
+    }
+  }
 }
 const updateArticlePre = async (id) => {
   await store.dispatch('articleModule/getArticleById',id)   //修改当前页文章
   editorRef.value.setHtml(store.state.articleModule.article_pre.content)
   headers.value = editorRef.value.getElemsByTypePrefix("header")
+  if (headers.value.length > 0){
+    isShow.value = true
+  }else {
+    isShow.value = false
+  }
+  elScroll.value.scrollTo(0,0)
 }
 
 //获取文章以及分类目录
@@ -241,7 +254,10 @@ store.dispatch('articleModule/getArticleAndSort')
 <style scoped>
 .articleArea{
   height: 100vh;
-  background-color: #3c99f6;
+  /*background-color: #f56c6c;*/
+  background-image: url("../../assets/bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .articleCardContainer {
@@ -260,10 +276,14 @@ store.dispatch('articleModule/getArticleAndSort')
 .articlesCard {
   width: 50%;
   margin-top: 1.6rem;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 0.7);
   box-shadow: 0 0 25px 1px #2c2c2c;
-
+  backdrop-filter: blur(10px);
+  border-radius: .6rem;
   padding: 1rem 1rem;
+}
+.articlesCard>>>.el-divider__text{
+  background-color: transparent;
 }
 .articleCardTop{
   height: 2rem;
@@ -329,7 +349,8 @@ store.dispatch('articleModule/getArticleAndSort')
 .active.articleCatalogue{
   width: 15rem;
   height: 100vh;
-  background-color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
   position: fixed;
 }
 .Catalogue{
@@ -352,7 +373,7 @@ store.dispatch('articleModule/getArticleAndSort')
   font-size: 1.6rem;
   width: 50px;
   height: 50px;
-  background-color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: 50%;
   transform: translateX(0px);
   transition: 0.3s;
@@ -361,8 +382,7 @@ store.dispatch('articleModule/getArticleAndSort')
 .active.articleCatalogueIsOpen{
   width: 50px;
   height: 50px;
-  background-color: #FFFFFF;
-  border-radius: 0;
+  background-color: transparent;
   transform: translateX(calc(14rem - 50px));
   transition: border-radius 0.3s,transform 0.6s 0.3s;
 }
@@ -371,8 +391,8 @@ store.dispatch('articleModule/getArticleAndSort')
   color: #FFFFFF;
 }
 .active.articleCatalogueIsOpen:hover{
-  background-color: #FFFFFF;
-  color: #000000;
+  background-color: #2c2c2c;
+  color: #FFFFFF;
 }
 .CatalogueItem {
   margin-bottom: 1rem;
@@ -408,9 +428,9 @@ store.dispatch('articleModule/getArticleAndSort')
   transform: translateX(-500px);
 }
 #CatalogueItemArticle:hover {
-  color: #3c99f6;
+  color: #FFFFFF;
   cursor: pointer;
-  background-color: rgba(241, 240, 240, 0.8);
+  background-color: rgb(44, 44, 44);
 }
 .active#CatalogueItemArticle {
   height: 2rem;
@@ -420,7 +440,7 @@ store.dispatch('articleModule/getArticleAndSort')
 .active#CatalogueItemArticle span {
   opacity: 1;
   cursor: pointer;
-  transition: 0.3s 0.3s,transform 0s;
+  transition: 0.3s 0.3s,transform 0s,color 0s;
   transform: translateX(0);
 }
 .articleCatalogue>>>.el-scrollbar__bar.is-vertical{
@@ -430,7 +450,7 @@ store.dispatch('articleModule/getArticleAndSort')
 .articleContentCatalogue {
   width: 16rem;
   margin-top: 1.6rem;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.7);
   position: fixed;
   right: 3rem;
   display: flex;
@@ -438,6 +458,8 @@ store.dispatch('articleModule/getArticleAndSort')
   justify-content: center;
   border-radius: .8rem;
   box-shadow: 0 0 8px 2px #FFFFFF;
+  backdrop-filter: blur(10px);
+
 }
 /*************************** 底部样式 ********************/
 .links {
@@ -498,5 +520,22 @@ store.dispatch('articleModule/getArticleAndSort')
   width: 3rem;
   height: 3rem;
 
+}
+
+
+/*************************** vue组件动画 ********************/
+.rec-enter-active{
+  animation: articleContentCatalogue .5s ease-in-out;
+}
+.rec-leave-active{
+  animation: articleContentCatalogue .5s ease-in-out reverse;
+}
+@keyframes articleContentCatalogue {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 </style>
