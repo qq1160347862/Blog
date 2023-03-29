@@ -19,12 +19,12 @@
                 </span>
                 <div :class="'CatalogueItemArticle'+index"
                      id="CatalogueItemArticle"
-                     v-show="store.state.articleModule.articleSortCatalogue[index] !== null"
+                     v-show="articleSortCatalogue[index] !== null"
                      v-for="(item2,index2) in store.state.articleModule.articleSortCatalogue[index]"
                      @click="updateArticlePre(item2.articleId)">
                   <span>{{item2.title}}</span>
                 </div>
-                <div :class="'CatalogueItemArticle'+index" id="CatalogueItemArticle" v-show="store.state.articleModule.articleSortCatalogue[index] === null">
+                <div :class="'CatalogueItemArticle'+index" id="CatalogueItemArticle" v-show="articleSortCatalogue[index] === null">
                   <span>{{"没有此类别文章"}}</span>
                 </div>
               </div>
@@ -140,6 +140,9 @@ import {CaretRight,CaretBottom,Folder,Back,Right,Promotion,CoffeeCup,UserFilled,
 import store from '@/store'
 import $ from "jquery";
 import {onBeforeUpdate, onMounted, onUpdated, reactive, ref, shallowRef} from "vue";
+let articleSortCatalogue = reactive([])
+articleSortCatalogue = store.state.articleModule.articleSortCatalogue
+
 let elScroll = ref()
 let isShowTopNav = false
 const editorRef = shallowRef()
@@ -245,10 +248,13 @@ const updateArticlePre = async (id) => {
   elScroll.value.scrollTo(0,0)
 }
 
-//获取文章以及分类目录
-store.dispatch('articleModule/getArticleById',store.state.articleModule.articleId_pre)
-store.dispatch('sortModule/SortIdAndSortName')
-store.dispatch('articleModule/getArticleAndSort')
+const initData = () => {
+  //获取文章以及分类目录
+  store.dispatch('articleModule/getArticleById',store.state.articleModule.articleId_pre)
+  store.dispatch('articleModule/getArticleAndSort')
+}
+
+initData()
 </script>
 
 <style scoped>

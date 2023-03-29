@@ -1,8 +1,9 @@
 <template>
   <div class="homeContainer">
+<!--    <canvas id="bgCanvas"></canvas>-->
     <headerNav></headerNav>
     <div class="homeBody">
-      <el-scrollbar @scroll="scroll" ref="elScroll">
+      <el-scrollbar @scroll="scroll" ref="elScroll" view-class="homeScrollbar">
         <div class="homeBg">
           <div class="BgContentArea">
             <div class="bgLeft">
@@ -29,8 +30,6 @@
               </div>
               <div class="articleArea">
                 <div class="articleCard" v-for="item in store.state.articleModule.articleList">
-<!--                  {{item.articleId}}-->
-<!--                  {{item.title}}-->
                   <div class="articleInfo">
                     <div class="articleTitle">
                       <span  @click="redirectArticleIndex(item.articleId)">
@@ -56,9 +55,6 @@
                       </span>
                     </div>
                   </div>
-                  <div class="articleTxT">
-                    <div>{{item.content}}</div>
-                  </div>
                 </div>
                 <div class="articlePager">
                   <el-pagination
@@ -75,28 +71,28 @@
             <div class="hcRight">
             </div>
           </div>
-        </div>
-        <div class="homeBottom">
-          <div class="links">
-            <div class="iconBox">
-              <div class="icon">
-                <ul>
-                  <li>
-                    <el-icon><Promotion /></el-icon>
-                  </li>
-                  <li>
-                    <el-icon><CoffeeCup /></el-icon>
-                  </li>
-                  <li>
-                    <el-icon><Promotion /></el-icon>
-                  </li>
-                  <li>
-                    <el-icon><CoffeeCup /></el-icon>
-                  </li>
-                </ul>
-              </div>
-              <div class="Copyright">
-                <span>Theme by YYX | Copyright © 2022-2023 本博客仅仅作为自己学习日常学习记录使用</span>
+          <div class="homeBottom">
+            <div class="links">
+              <div class="iconBox">
+                <div class="icon">
+                  <ul>
+                    <li>
+                      <el-icon><Promotion /></el-icon>
+                    </li>
+                    <li>
+                      <el-icon><CoffeeCup /></el-icon>
+                    </li>
+                    <li>
+                      <el-icon><Promotion /></el-icon>
+                    </li>
+                    <li>
+                      <el-icon><CoffeeCup /></el-icon>
+                    </li>
+                  </ul>
+                </div>
+                <div class="Copyright">
+                  <span>Theme by YYX | Copyright © 2022-2023 本博客仅仅作为自己学习日常学习记录使用</span>
+                </div>
               </div>
             </div>
           </div>
@@ -110,10 +106,11 @@
 <script setup>
 import headerNav from "@/components/headerNav";
 import {Top,Promotion,CoffeeCup,UserFilled,Calendar,FolderOpened,Notebook} from '@element-plus/icons-vue'
-import {onMounted, ref, reactive, onUpdated, onBeforeUpdate} from 'vue'
+import {onMounted, ref, reactive, onUpdated, onBeforeUpdate, onBeforeUnmount} from 'vue'
 import $ from 'jquery'
 import store from '@/store'
 import {useRouter} from "vue-router"
+import {free, initBgCanvas} from '@/assets/js/bgCanvas'
 let router = useRouter()
 let current = ref(1)
 let size = ref(5)
@@ -189,7 +186,7 @@ const handleCurrentChange = () => {
 
 const redirectArticleIndex = (e) => {
   store.commit('articleModule/updateArticleId_pre',e)
-  store.dispatch('articleModule/getArticleCatalogue')
+  store.dispatch('articleModule/getArticleCatalogue') //用于上下页
   router.push('/article')
 }
 
@@ -203,7 +200,6 @@ const scroll = (e) => {
     isShowTopNav = false
     $(".headerContainer").css("background-color",color)
   }
-
 }
 
 //懒加载
@@ -250,6 +246,29 @@ onMounted(() => {
   $(".switchToRecent").addClass("Strong")
   store.dispatch("articleModule/getArticleList",{current:current.value,size:size.value})
 })
+
+
+//可交互动态背景
+// const bgData = reactive({
+//   ctx:{},
+//   initCanvas(){
+//     let bgCanvas = document.getElementById("bgCanvas")
+//     let width
+//     let height
+//     bgCanvas.width = width = window.innerWidth
+//     bgCanvas.height = height = window.innerHeight
+//     this.ctx = bgCanvas.getContext("2d")
+//     initBgCanvas(this.ctx,width,height)
+//   }
+// })
+// onMounted(()=> {
+//   bgData.initCanvas()
+// })
+// onBeforeUnmount(()=>{
+//   free() //释放canvas
+// })
+
+
 </script>
 
 <style scoped>
@@ -290,11 +309,8 @@ onMounted(() => {
 .BgContentArea {
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3);
-  /*backdrop-filter: blur(2px);*/
-
+  background-color: rgba(0, 0, 0, 0.1);
   display: flex;
-
 }
 .bgLeft {
   /*background-color: rgba(255, 0, 0, 0.5);*/
@@ -315,8 +331,9 @@ onMounted(() => {
 .headImgArea {
   width: 90%;
   height: 70%;
-  background-color: rgba(246, 245, 245, 0.8);
-  border-radius: 4rem;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: .6rem;
   position: absolute;
   top: 10%;
   display: flex;
@@ -362,10 +379,12 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: transparent;
 }
 .homeContentLayout {
-  background-color: rgba(246, 245, 245, 0.5);
-  width: 90%;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  width: 80%;
   /*height: 150vh;*/
   margin-top: 3rem;
   margin-bottom: 3rem;
@@ -397,7 +416,7 @@ onMounted(() => {
 }
 .sort ul li{
   margin-left: 2rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
   height: calc(100% - 1px);
 
   display: flex;
@@ -423,7 +442,7 @@ onMounted(() => {
 .articleCard {
   position: relative;
   width: 90%;
-  height: 16rem;
+  height: 8rem;
   background-color: white;
   margin-bottom: 3rem;
   border-radius: .8rem;
@@ -445,14 +464,13 @@ onMounted(() => {
   margin-bottom: 2rem;
 }
 .articleInfo {
-  flex: 1;
   display: flex;
   justify-content: center;
   flex-direction: column;
 }
 .articleTitle {
   margin-left: 1rem;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   margin-top: 2rem;
 
 }
@@ -466,7 +484,7 @@ onMounted(() => {
   margin-left: 1rem;
   margin-right: 1rem;
   margin-top:  1rem;
-  font-size: .9rem;
+  font-size: .6rem;
   height: 2rem;
   border-bottom: rgba(134, 134, 134, 0.5) solid 1px;
   display: flex;
@@ -479,17 +497,7 @@ onMounted(() => {
 .articleOther>span:hover {
   color: #3c99f6;
 }
-.articleTxT{
-  flex: 1;
-}
-.articleTxT>div {
-  margin-left: 1rem;
-  margin-top: 1rem;
-  font-size: 1.1rem;
 
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .articlePager {
   width: 100%;
   height: 2rem;
@@ -572,6 +580,18 @@ onMounted(() => {
   width: 3rem;
   height: 3rem;
 
+}
+
+
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /*不阻挡其他组件事件的触发*/
+  pointer-events: none;
+  z-index: -10;
 }
 
 </style>

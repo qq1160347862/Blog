@@ -2,7 +2,7 @@
   <router-view v-if="isRouterAlive"></router-view>
   <live2-d></live2-d>
   <sideNav class="sideNav"></sideNav>
-  <div id="rainBox"></div>
+<!--  <canvas id="rainCanvas"></canvas>-->
   <musicPlayer :class="{musicPlayer:store.state.musicModule.isMusicPlayerShow,
                         musicPlayer_close:!store.state.musicModule.isMusicPlayerShow}"></musicPlayer>
 </template>
@@ -39,10 +39,9 @@ export default {
 import sideNav from "@/components/sideNav"
 import musicPlayer from "@/components/musicPlayer"
 import store from "@/store";
-import {onMounted} from "vue";
+import {onBeforeUnmount, onMounted, reactive} from "vue";
 import Live2D from '@/components/Live2D/index'
-
-
+import {freeRain, initRainCanvas} from './assets/js/rainCanvas'
 
 document.onmousedown = (e) =>{
   let clickAnimation = document.createElement("div")
@@ -80,40 +79,6 @@ document.onmousedown = (e) =>{
 
   click(e,this)
 }
-
-//DOM元素挂载之后执行 下雨特效
-onMounted(() => {
-//   const rainBox = document.getElementById("rainBox")
-//   const MaxCount = 30
-//   let rainBoxWidth = rainBox.clientWidth;
-//   let rainBoxHeight = rainBox.clientHeight;
-// //页面改变时，重新赋值
-//   window.onresize = function () {
-//     rainBoxWidth = rainBox.clientWidth;
-//     rainBoxHeight = rainBox.clientHeight;
-//   }
-// //每隔一段时间，生成雨滴
-//   setInterval(() => {
-//     let rain = document.createElement("div")
-//     rain.classList.add("rain")
-//     rain.style.top = 0
-//
-//     rain.style.left = Math.random() * rainBoxWidth + "px"
-//     rain.style.height = Math.random() * 3 + "rem"
-//     rain.style.opacity = Math.random()
-//     rainBox.append(rain)
-//
-//     let race = 1
-//     const timer = setInterval(() => {
-//       if (parseInt(rain.style.top) > rainBoxHeight) {
-//         clearInterval(timer)
-//         rainBox.removeChild(rain)
-//       }
-//       race++
-//       rain.style.top = parseInt(rain.style.top) + race + "px"
-//     }, 20)
-//   }, 250)
-})
 /*看板娘初始化
     参数说明
     model 模型的配置
@@ -144,6 +109,26 @@ onMounted(() => {
 //   mobile: { show: true },   //要不要盯着你的鼠标看
 //   log: false,
 // })
+
+
+//雨滴特效
+// const rainData = reactive({
+//   ctx:{},
+//   initCanvas(){
+//     let rainCanvas = document.getElementById("rainCanvas")
+//     rainCanvas.width = window.innerWidth
+//     rainCanvas.height = window.innerHeight
+//     this.ctx = rainCanvas.getContext("2d")
+//     initRainCanvas(this.ctx)
+//   }
+// })
+// onMounted(()=> {
+//   rainData.initCanvas()
+// })
+// onBeforeUnmount(()=>{
+//   freeRain() //释放canvas
+// })
+
 </script>
 
 
@@ -200,8 +185,7 @@ onMounted(() => {
 }
 
 
-
-#rainBox {
+#rainCanvas {
   position: fixed;
   top: 0;
   left: 0;
@@ -209,10 +193,5 @@ onMounted(() => {
   height: 100vh;
   /*不阻挡其他组件事件的触发*/
   pointer-events: none;
-}
-.rain {
-  width: 0.2rem;
-  background-color: rgba(255, 255, 255, 0.6);
-  position: absolute;
 }
 </style>

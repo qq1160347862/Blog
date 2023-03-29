@@ -5,6 +5,7 @@ import {
     getArticleByPageByRecommend, getArticleCatalogue,
     LikeArticleByPage
 } from "@/request/api/article";
+import store from "@/store";
 
 const articleModule = {
     namespaced:true,
@@ -135,11 +136,16 @@ const articleModule = {
 
         //查询文章目录
         async getArticleCatalogue(context,value){
-            let res = await getArticleCatalogue()
-            if (res.data.code === 2000){
-                context.commit('updateArticleCatalogue',res.data.data.articleCatalogue)
+            if(context.state.articleCatalogue.length > 0){
+                console.log("所有文章数据已经获取，无需再次请求")
             }else {
-                console.log("数据获取失败")
+                console.log("请求文章数据")
+                let res = await getArticleCatalogue()
+                if (res.data.code === 2000){
+                    context.commit('updateArticleCatalogue',res.data.data.articleCatalogue)
+                }else {
+                    console.log("数据获取失败")
+                }
             }
         },
         //根据ID查询文章
@@ -155,18 +161,27 @@ const articleModule = {
         },
         //获取分类目录
         async getArticleAndSort(context){
-            let tempList = []
-            // let index_fix = 0
-            //  用forEach发请求，无法确保多个请求的then会按顺序返回
-            for (let i = 0; i < context.rootState.sortModule.sortList.length; i++) {
-                let res = await getArticleAndSort(context.rootState.sortModule.sortList[i].sortId)
-                if (res.data.code === 2000){
-                    tempList.push(res.data.data.sortCatalogue)
-                }else {
-                    console.log("数据获取失败")
-                }
+            if (context.rootState.sortModule.sortList.length === 0){
+                console.log("目前分类列表为0,先获取其数据再获取目录数据")
+                await context.dispatch('sortModule/SortIdAndSortName', {}, {root: true})
             }
-            context.commit('updateArticleSortCatalogue',tempList)
+            if (context.state.articleSortCatalogue.length > 0){
+                console.log("目录数据已存在，无需请求")
+            }else {
+                console.log("加载数据")
+                let tempList = []
+                // let index_fix = 0
+                //  用forEach发请求，无法确保多个请求的then会按顺序返回
+                for (let i = 0; i < context.rootState.sortModule.sortList.length; i++) {
+                    let res = await getArticleAndSort(context.rootState.sortModule.sortList[i].sortId)
+                    if (res.data.code === 2000){
+                        tempList.push(res.data.data.sortCatalogue)
+                    }else {
+                        console.log("数据获取失败")
+                    }
+                }
+                context.commit('updateArticleSortCatalogue',tempList)
+            }
         },
 
 
