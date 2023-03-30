@@ -5,6 +5,7 @@
 <!--  <canvas id="rainCanvas"></canvas>-->
   <musicPlayer :class="{musicPlayer:store.state.musicModule.isMusicPlayerShow,
                         musicPlayer_close:!store.state.musicModule.isMusicPlayerShow}"></musicPlayer>
+  <musicDrawer></musicDrawer>
 </template>
 
 <script>
@@ -38,6 +39,7 @@ export default {
 <script setup>
 import sideNav from "@/components/sideNav"
 import musicPlayer from "@/components/musicPlayer"
+import musicDrawer from "@/components/musicDrawer";
 import store from "@/store";
 import {onBeforeUnmount, onMounted, reactive} from "vue";
 import Live2D from '@/components/Live2D/index'
@@ -61,7 +63,7 @@ document.onmousedown = (e) =>{
 
     if(!clickAnimation.ifDown){
       clickAnimation.ifDown = true
-      clickAnimation.style.zIndex = 1000
+      clickAnimation.style.zIndex = 4000
       clickAnimation.style.left = e.clientX + "px"
       clickAnimation.style.top = e.clientY + "px"
 

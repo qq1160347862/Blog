@@ -4,22 +4,7 @@ import userModule from '@/store/userModule/index'
 import articleModule from '@/store/articleModule/index'
 import LabelModule from "@/store/labelModule";
 import sortModule from "@/store/sortModule";
-const musicModule = {
-    namespaced:true, //命名空间 调用时路径为: moduleName/functionName
-    state: {
-        isMusicPlayerShow:false,
-        isMusicPlaying:false
-    },
-    //同步操作 commit("函数名",参数)
-    mutations: {
-        updateIsMusicPlayerShow(state,value){
-            state.isMusicPlayerShow = value
-        },
-        updateIsMusicPlaying(state,value){
-            state.isMusicPlaying = value
-        },
-    },
-}
+import musicModule from "@/store/musicModule"
 
 
 export default createStore({

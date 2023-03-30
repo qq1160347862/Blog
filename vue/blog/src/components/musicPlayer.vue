@@ -5,7 +5,8 @@
              loop></audio>
 <!--             @timeupdate="updateTime"-->
 <!--             @ended="ended"-->
-      <div :class="{musicImg_active:store.state.musicModule.isMusicPlaying,musicImg:!store.state.musicModule.isMusicPlaying}">
+      <div @click="openMusicDrawer" :class="{musicImg_active:store.state.musicModule.isMusicPlaying,
+                    musicImg:!store.state.musicModule.isMusicPlaying}">
         <img src="../assets/headimg.jpg" alt="">
       </div>
       <div class="musicName">音乐名称</div>
@@ -42,6 +43,11 @@ import store from '@/store'
 import {VideoPlay,VideoPause,Expand} from '@element-plus/icons-vue'
 import mp3 from '../assets/music.mp3'
 
+
+const openMusicDrawer = () => {
+  store.commit('musicModule/updateIsMusicDrawerShow',true)
+  store.commit('musicModule/updateIsMusicPlayerShow',false)
+}
 const musicOn_Off = () => {
   let myAudio = document.getElementById('mp')
   myAudio.src = mp3
