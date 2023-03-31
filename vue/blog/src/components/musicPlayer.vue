@@ -1,8 +1,10 @@
 <template>
   <div class="musicPlayer">
     <div class="musicPlayerLayout">
-      <audio ref="audio" id="mp" class="mp"
-             loop></audio>
+      <audio ref="audio"
+             :src="`https://music.163.com/song/media/outer/url?id=${store.state.musicModule.musicList[store.state.musicModule.musicIndex].id}.mp3`"
+             id="mp"
+             class="mp"></audio>
 <!--             @timeupdate="updateTime"-->
 <!--             @ended="ended"-->
       <div @click="openMusicDrawer" :class="{musicImg_active:store.state.musicModule.isMusicPlaying,
@@ -41,7 +43,6 @@ export default {
 <script setup>
 import store from '@/store'
 import {VideoPlay,VideoPause,Expand} from '@element-plus/icons-vue'
-import mp3 from '../assets/music.mp3'
 
 
 const openMusicDrawer = () => {
@@ -50,8 +51,7 @@ const openMusicDrawer = () => {
 }
 const musicOn_Off = () => {
   let myAudio = document.getElementById('mp')
-  myAudio.src = mp3
-  if(!store.state.musicModule.isMusicPlaying){
+  if(myAudio.paused){
     myAudio.play()
     store.commit("musicModule/updateIsMusicPlaying",true)
   }else {

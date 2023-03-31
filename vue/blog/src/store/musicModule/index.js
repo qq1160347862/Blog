@@ -4,7 +4,12 @@ const musicModule = {
     state: {
         isMusicPlayerShow:false,
         isMusicPlaying:false,
-        isMusicDrawerShow:false
+        isMusicDrawerShow:false,
+
+        musicList:[{
+            id:27646205,
+        }],
+        musicIndex:0,
     },
     //同步操作 commit("函数名",参数)
     mutations: {
@@ -16,6 +21,12 @@ const musicModule = {
         },
         updateIsMusicDrawerShow(state,value){
             state.isMusicDrawerShow  =value
+        },
+        updateMusicList(state,value){
+            state.musicList = value
+        },
+        updateMusicIndex(state,value){
+            state.musicIndex = value
         }
     },
 }
