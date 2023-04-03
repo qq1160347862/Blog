@@ -4,14 +4,16 @@
       <audio ref="audio"
              :src="`https://music.163.com/song/media/outer/url?id=${store.state.musicModule.musicList[store.state.musicModule.musicIndex].id}.mp3`"
              id="mp"
+             autoplay
+             @ended="ended"
              class="mp"></audio>
 <!--             @timeupdate="updateTime"-->
 <!--             @ended="ended"-->
       <div @click="openMusicDrawer" :class="{musicImg_active:store.state.musicModule.isMusicPlaying,
                     musicImg:!store.state.musicModule.isMusicPlaying}">
-        <img src="../assets/headimg.jpg" alt="">
+        <img :src="store.state.musicModule.musicList[store.state.musicModule.musicIndex].al.picUrl" alt="">
       </div>
-      <div class="musicName">音乐名称</div>
+      <div class="musicName">{{store.state.musicModule.musicList[store.state.musicModule.musicIndex].name}}</div>
       <div class="playOrPause">
         <el-icon v-show="store.state.musicModule.isMusicPlaying===false"  @click="musicOn_Off"><VideoPlay /></el-icon>
         <el-icon v-show="store.state.musicModule.isMusicPlaying===true"   @click="musicOn_Off"><VideoPause /></el-icon>
@@ -43,6 +45,7 @@ export default {
 <script setup>
 import store from '@/store'
 import {VideoPlay,VideoPause,Expand} from '@element-plus/icons-vue'
+import {nextTick, onMounted} from "vue";
 
 
 const openMusicDrawer = () => {
@@ -59,7 +62,41 @@ const musicOn_Off = () => {
     store.commit("musicModule/updateIsMusicPlaying",false)
   }
 }
-
+const ended = () => {
+  //当前歌曲播放完毕后
+  switch (store.state.musicModule.playMode) {
+    case 0:{//顺序播放
+      goPlay(1)
+    }break;
+    case 1:{//随机播放
+      let randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
+      if(randomNum === this.playListIndex){
+        while (randomNum === this.playListIndex){
+          randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
+        }
+        goPlay(randomNum)
+      }else {
+        goPlay(randomNum)
+      }
+    }break;
+    case 2:{//单曲循环
+      goPlay(-1)
+      nextTick(()=>{
+        goPlay(1)
+      })
+    }break;
+  }
+}
+const goPlay = (e) => {
+  let index = store.state.musicModule.musicIndex
+  let length = store.state.musicModule.musicList.length
+  store.commit('musicModule/updateMusicIndex',(index + e + length)%length)
+}
+onMounted(()=>{
+  let myAudio = document.getElementById('mp')
+  myAudio.pause()
+  store.commit('musicModule/updateIsMusicPlaying',false)
+})
 </script>
 <style scoped>
 .musicPlayer {

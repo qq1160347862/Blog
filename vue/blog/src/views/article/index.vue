@@ -11,7 +11,8 @@
               <el-icon v-show="isOpen"><FolderOpened /></el-icon>
             </div>
             <el-scrollbar>
-              <div class="CatalogueItem" v-for="(item,index) in store.state.sortModule.sortList">
+              <div class="CatalogueItem"
+                   v-for="(item,index) in store.state.sortModule.sortList">
                 <span  @click="SortIsOpen(index)">
                   <el-icon v-show="!isOpen_sort[index]"><CaretRight /></el-icon>
                   <el-icon v-show="isOpen_sort[index]"><CaretBottom /></el-icon>
@@ -19,7 +20,7 @@
                 </span>
                 <div :class="'CatalogueItemArticle'+index"
                      id="CatalogueItemArticle"
-                     v-show="articleSortCatalogue[index] !== null"
+                     v-show="articleSortCatalogue[index] !== null || articleSortCatalogue[index] !== undefined"
                      v-for="(item2,index2) in store.state.articleModule.articleSortCatalogue[index]"
                      @click="updateArticlePre(item2.articleId)">
                   <span>{{item2.title}}</span>

@@ -45,6 +45,7 @@ import {onBeforeUnmount, onMounted, reactive} from "vue";
 import Live2D from '@/components/Live2D/index'
 import {freeRain, initRainCanvas} from './assets/js/rainCanvas'
 
+
 document.onmousedown = (e) =>{
   let clickAnimation = document.createElement("div")
   document.body.appendChild(clickAnimation)
@@ -100,17 +101,22 @@ document.onmousedown = (e) =>{
        opacityDefault 默认透明度
        opacityOnHover 鼠标悬浮透明度
   */
-// window.L2Dwidget.init({
-//   pluginRootPath: 'live2dw/',
-//   pluginJsPath: 'lib/',
-//   pluginModelPath: 'live2d-widget-model-haru_2/assets/', //中间这个haru_2就是你的老婆,想换个老婆,换这个就可以了
-//   tagMode: false,
-//   debug: false,
-//   model: { jsonPath: 'live2dw/live2d-widget-model-haru_2/assets/haru02.model.json' },
-//   display: { position: 'left', width: 350, height: 800 },  //调整大小,和位置
-//   mobile: { show: true },   //要不要盯着你的鼠标看
-//   log: false,
+// onMounted(()=>{
+//   window.L2Dwidget.init({
+//     pluginRootPath: 'live2dw/',
+//     pluginJsPath: 'lib/',
+//     // pluginModelPath: 'live2d-widget-model-haru_2/assets/', //中间这个haru_2就是你的老婆,想换个老婆,换这个就可以了
+//     pluginModelPath: 'dbd_swimsuit', //中间这个haru_2就是你的老婆,想换个老婆,换这个就可以了
+//     tagMode: false,
+//     debug: false,
+//     // model: { jsonPath: 'live2dw/live2d-widget-model-haru_2/assets/haru02.model.json' },
+//     model: { jsonPath: 'live2dw/dbd_swimsuit/dbd_swimsuit.model3.json' },
+//     display: { position: 'right', width: 350, height: 800 },  //调整大小,和位置
+//     mobile: { show: true },   //要不要盯着你的鼠标看
+//     log: false,
+//   })
 // })
+
 
 
 //雨滴特效
