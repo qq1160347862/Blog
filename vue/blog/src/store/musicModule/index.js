@@ -1,3 +1,4 @@
+import {getMusicLyric} from "@/request/api/music";
 
 const musicModule = {
     namespaced:true, //命名空间 调用时路径为: moduleName/functionName
@@ -10,11 +11,20 @@ const musicModule = {
             id:27646205,
             name:"安和桥",
             al:{
+                name:"无名氏",
                 picUrl:"http://p4.music.126.net/GcRunGm02vZBicYmIN6GXw==/109951163200249252.jpg"
-            }
+            },
+            ar:[{
+                name:"无名氏"
+            }]
+
         }],
         musicIndex:0,
-        playMode:0 //播放模式
+        playMode:0, //播放模式
+
+        lyricList:{},//歌词
+        currentTime:0,//当前播放时间
+        duration:0,//歌曲总时长
     },
     //同步操作 commit("函数名",参数)
     mutations: {
@@ -35,6 +45,15 @@ const musicModule = {
         },
         updateMode(state,value){
           state.playMode = value
+        },
+        updateLyricList(state,value){
+            state.lyricList = value
+        },
+        updateCurrentTime(state,value){
+            state.currentTime = value
+        },
+        updateDuration(state,value){
+            state.duration = value
         },
 
 
@@ -61,6 +80,14 @@ const musicModule = {
             }
         },
     },
+    actions:{
+        //异步获得歌词数据
+        getLyric:async function (context,value) {
+            let res = await getMusicLyric(value)
+            // console.log(res)
+            context.commit("updateLyricList",res.data.lrc)
+        },
+    }
 }
 
 export default musicModule

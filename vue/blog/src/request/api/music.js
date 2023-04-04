@@ -38,3 +38,11 @@ export const getSearchHotDetail = () => {
         url:'/search/hot/detail'
     })
 }
+
+//获取歌词数据
+export const getMusicLyric = (data) => {
+    return service_music({
+        method:"GET",
+        url:`/lyric?id=${data}`
+    })
+}

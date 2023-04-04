@@ -5,18 +5,19 @@
              :src="`https://music.163.com/song/media/outer/url?id=${store.state.musicModule.musicList[store.state.musicModule.musicIndex].id}.mp3`"
              id="mp"
              autoplay
+             @timeupdate="updateTime"
              @ended="ended"
              class="mp"></audio>
-<!--             @timeupdate="updateTime"-->
-<!--             @ended="ended"-->
       <div @click="openMusicDrawer" :class="{musicImg_active:store.state.musicModule.isMusicPlaying,
                     musicImg:!store.state.musicModule.isMusicPlaying}">
         <img :src="store.state.musicModule.musicList[store.state.musicModule.musicIndex].al.picUrl" alt="">
       </div>
       <div class="musicName">{{store.state.musicModule.musicList[store.state.musicModule.musicIndex].name}}</div>
       <div class="playOrPause">
+        <el-icon @click="goPlay(-1)"><CaretLeft/></el-icon>
         <el-icon v-show="store.state.musicModule.isMusicPlaying===false"  @click="musicOn_Off"><VideoPlay /></el-icon>
         <el-icon v-show="store.state.musicModule.isMusicPlaying===true"   @click="musicOn_Off"><VideoPause /></el-icon>
+        <el-icon @click="goPlay(1)"><CaretRight/></el-icon>
         <el-icon><Expand /></el-icon>
       </div>
     </div>
@@ -44,13 +45,15 @@ export default {
 </script>
 <script setup>
 import store from '@/store'
-import {VideoPlay,VideoPause,Expand} from '@element-plus/icons-vue'
-import {nextTick, onMounted} from "vue";
+import {VideoPlay,VideoPause,Expand,CaretLeft,CaretRight} from '@element-plus/icons-vue'
+import {nextTick, onMounted, onUpdated, ref} from "vue";
 
+let audio = ref()
 
 const openMusicDrawer = () => {
   store.commit('musicModule/updateIsMusicDrawerShow',true)
   store.commit('musicModule/updateIsMusicPlayerShow',false)
+  store.commit('musicModule/updateDuration',audio.value.duration)
 }
 const musicOn_Off = () => {
   let myAudio = document.getElementById('mp')
@@ -62,6 +65,7 @@ const musicOn_Off = () => {
     store.commit("musicModule/updateIsMusicPlaying",false)
   }
 }
+//音乐播放结束之后的处理事件
 const ended = () => {
   //当前歌曲播放完毕后
   switch (store.state.musicModule.playMode) {
@@ -91,11 +95,22 @@ const goPlay = (e) => {
   let index = store.state.musicModule.musicIndex
   let length = store.state.musicModule.musicList.length
   store.commit('musicModule/updateMusicIndex',(index + e + length)%length)
+  store.commit('musicModule/updateIsMusicPlaying',true)
 }
+//更新音乐当前时间戳和总时间
+const updateTime = (e) => {
+  store.commit('musicModule/updateCurrentTime',e.target.currentTime)
+  store.commit('musicModule/updateDuration',audio.value.duration)
+}
+//切换歌曲更新歌词,本vue中的组件发生处于更新阶段时执行
+onUpdated(()=>{
+  store.dispatch('musicModule/getLyric',store.state.musicModule.musicList[store.state.musicModule.musicIndex].id)
+})
 onMounted(()=>{
   let myAudio = document.getElementById('mp')
   myAudio.pause()
   store.commit('musicModule/updateIsMusicPlaying',false)
+  store.dispatch('musicModule/getLyric',store.state.musicModule.musicList[store.state.musicModule.musicIndex].id)
 })
 </script>
 <style scoped>
