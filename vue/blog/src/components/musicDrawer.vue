@@ -13,6 +13,7 @@
           <div class="musicSearchBar">
             <el-input v-model="musicSearchWords"
                       size="large"
+                      clearable
                       @focus="openMusicSearchBar"
                       ref="musicSearchInput"
                       @keyup.enter="musicSearch(null)"
@@ -26,10 +27,31 @@
           <div class="msd_index"
                v-show="index_to_suggest === false
                && result === false">
+            <div class="exitResult">
+              <div @click="closeMusicSearchBar">
+                <el-icon><Close /></el-icon>
+              </div>
+            </div>
+            <div style="height: 2rem;
+                        font-weight: bold;
+                        font-size: 1.2rem">热搜榜</div>
             <el-scrollbar>
-              <div class="exitResult">
-                <div @click="closeMusicSearchBar">
-                  <el-icon><Close /></el-icon>
+              <div class="hotMusicList" v-if="hotMusicList.length > 0 || hotMusicList.value !== null">
+                <div class="hotMusicListItem"
+                     @click="musicSearch(item.searchWord)"
+                     v-for="(item,index) in hotMusicList">
+                  <div :class="{hotMusicListItem_index:(index + 1) > 3,
+                                hotMusicListItem_index_red:(index + 1) <= 3}">
+                    {{index + 1}}
+                  </div>
+                  <div class="hotMusicListItemInfos">
+                    <span :class="{mn:(index + 1) > 3,mn_bold:(index + 1) <= 3}">{{item.searchWord}}</span>
+                    <span class="ms">{{item.score}}</span>
+                    <img v-if="item.iconUrl !== null" :src="item.iconUrl" alt="">
+                    <div class="mDesc" v-if="item.content !== '' || item.content !== null">
+                      <span>{{item.content}}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </el-scrollbar>
@@ -37,12 +59,12 @@
           <div class="msd_suggest"
                v-show="index_to_suggest === true
                && result === false" >
-            <el-scrollbar>
-              <div class="exitResult">
-                <div @click="closeMusicSearchBar">
-                  <el-icon><Close /></el-icon>
-                </div>
+            <div class="exitResult">
+              <div @click="closeMusicSearchBar">
+                <el-icon><Close /></el-icon>
               </div>
+            </div>
+            <el-scrollbar>
               <div class="suggestionItem"
                    @click="musicSearch(item.keyword)"
                    v-for="item in suggestionList">
@@ -52,15 +74,15 @@
             </el-scrollbar>
           </div>
           <div class="msd_result" v-show="result === true">
-            <el-scrollbar @scroll="loadingSongsData" view-class="resultScroll">
-              <div class="exitResult">
-                <div @click="closeMusicSearchBar">
-                  <el-icon><Close /></el-icon>
-                </div>
-                <div @click="exitResult">
-                  <el-icon><Back /></el-icon>
-                </div>
+            <div class="exitResult">
+              <div @click="closeMusicSearchBar">
+                <el-icon><Close /></el-icon>
               </div>
+              <div @click="exitResult">
+                <el-icon><Back /></el-icon>
+              </div>
+            </div>
+            <el-scrollbar @scroll="loadingSongsData" view-class="resultScroll">
               <div class="resultItem"
                    v-if="musicList !== null || musicList.length > 0"
                    v-for="(item,index) in musicList"
@@ -130,7 +152,7 @@ export default {
 import {computed, nextTick, onMounted, onUpdated, reactive, ref, watch} from 'vue'
 import store from "@/store";
 import {ArrowDownBold, Search, Back, Close, VideoPlay, VideoPause, CaretLeft, CaretRight} from "@element-plus/icons-vue";
-import {getMusicSearched, getSearchWordDefault, getSuggestWord} from "@/request/api/music";
+import {getMusicSearched, getSearchHotDetail, getSearchWordDefault, getSuggestWord} from "@/request/api/music";
 import {debounce} from 'lodash'
 import $ from 'jquery'
 import {ElLoading} from "element-plus";
@@ -151,6 +173,7 @@ let requestData = reactive({
   page:0
 })
 let musicList = ref([])
+let hotMusicList = ref([])
 let isLoadingComments = ref(false)
 let blockInfer = ref(false)
 const closeMusicDrawer = () => {
@@ -324,6 +347,15 @@ onMounted(async () => {
     console.log("关键词获取失败")
   }
 })
+//获取热搜榜
+onMounted(async () => {
+  let res = await getSearchHotDetail()
+  if (res.data.code === 200){
+    hotMusicList.value = res.data.data
+  }else {
+    console.log("热搜榜获取失败")
+  }
+})
 </script>
 
 <style scoped>
@@ -385,6 +417,7 @@ onMounted(async () => {
   width: 30%;
   height: 70%;
   background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
   border-radius: .8rem;
   position: absolute;
   top: 42%;
@@ -417,6 +450,59 @@ onMounted(async () => {
 }
 .msd_index>>>.el-scrollbar{
   width: 100%;
+}
+.hotMusicList {
+  width: 100%;
+}
+.hotMusicListItem {
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.hotMusicListItem:hover{
+  background-color: rgba(245, 108, 108, 0.1);
+}
+.hotMusicListItem_index {
+  height: 100%;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.2rem;
+  color: rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+}
+.hotMusicListItem_index_red {
+  height: 100%;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: rgb(253, 125, 125);
+  font-weight: bold;
+}
+.hotMusicListItemInfos .mn{
+  font-size: 1rem;
+}
+.hotMusicListItemInfos .mn_bold {
+  font-weight: bold;
+  font-size: 1rem;
+}
+.hotMusicListItemInfos .ms{
+  margin-left: .5rem;
+  font-size: 1rem;
+  color: rgba(44, 44, 44, 0.6);
+}
+.hotMusicListItemInfos .mDesc{
+  font-size: .8rem;
+  color: rgba(44, 44, 44, 0.6);
+}
+.hotMusicListItemInfos img{
+  height: 1rem;
 }
 .msd_suggest{
   border-radius: .8rem;
@@ -632,7 +718,7 @@ onMounted(async () => {
   width: 96%;
 }
 .musicDrawerBottom .musicProgressBar>>>.el-slider__runway{
-  background-color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.8);
   height: 1px;
 }
 /*进度条颜色*/
