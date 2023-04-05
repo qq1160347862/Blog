@@ -46,3 +46,20 @@ export const getMusicLyric = (data) => {
         url:`/lyric?id=${data}`
     })
 }
+
+
+//获取发现好歌单
+export const getMusicList = () => {
+    return service_music({
+        method:"get",
+        url:"/personalized?limit=8"
+    })
+}
+
+//获取歌单所有歌曲
+export const getMusicListSongAll = (id) => {
+    return service_music({
+        method:"GET",
+        url:`/playlist/track/all?id=${id}`
+    })
+}

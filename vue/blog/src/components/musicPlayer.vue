@@ -18,7 +18,6 @@
         <el-icon v-show="store.state.musicModule.isMusicPlaying===false"  @click="musicOn_Off"><VideoPlay /></el-icon>
         <el-icon v-show="store.state.musicModule.isMusicPlaying===true"   @click="musicOn_Off"><VideoPause /></el-icon>
         <el-icon @click="goPlay(1)"><CaretRight/></el-icon>
-        <el-icon><Expand /></el-icon>
       </div>
     </div>
   </div>
@@ -49,6 +48,8 @@ import {VideoPlay,VideoPause,Expand,CaretLeft,CaretRight} from '@element-plus/ic
 import {nextTick, onMounted, onUpdated, ref} from "vue";
 
 let audio = ref()
+let isShowMusicList = ref(false)
+let direction = ref('btt')
 
 const openMusicDrawer = () => {
   store.commit('musicModule/updateIsMusicDrawerShow',true)
@@ -74,8 +75,8 @@ const ended = () => {
     }break;
     case 1:{//随机播放
       let randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
-      if(randomNum === this.playListIndex){
-        while (randomNum === this.playListIndex){
+      if(randomNum === store.state.musicModule.musicIndex){
+        while (randomNum === store.state.musicModule.musicIndex){
           randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
         }
         goPlay(randomNum)

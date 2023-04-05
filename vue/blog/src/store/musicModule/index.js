@@ -43,7 +43,7 @@ const musicModule = {
         updateMusicIndex(state,value){
             state.musicIndex = value
         },
-        updateMode(state,value){
+        updatePlayMode(state,value){
           state.playMode = value
         },
         updateLyricList(state,value){
@@ -65,7 +65,7 @@ const musicModule = {
             for(let i = 0;i<state.musicList.length;i++){
                 if(state.musicList[i].id===value.id) {
                     console.log("歌曲存在，不必重复添加")
-                    state.playListIndex = i
+                    state.musicIndex = i
                     break
                 }else {
                     needAdd = needAdd + 1
@@ -79,6 +79,21 @@ const musicModule = {
                 state.musicIndex = 0
             }
         },
+        deleteMusicFromListById(state,value){
+            //查找即将删除的音乐
+            for(let i = 0;i<state.musicList.length;i++){
+                if(state.musicList[i].id===value) {
+                    if (state.musicList.length > 1){
+                        state.musicList.splice(i,1)
+                        break
+                    }else {
+                        alert("歌库中至少剩余一首歌曲")
+                    }
+
+                }
+            }
+        },
+
     },
     actions:{
         //异步获得歌词数据

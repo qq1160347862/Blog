@@ -119,6 +119,57 @@
               {{item.lrc}}
             </p>
           </div>
+          <div class="musicListContainer">
+            <div class="musicListContainerLayout">
+              <el-scrollbar>
+                <div :class="{musicListItem_playing:store.state.musicModule.musicList[store.state.musicModule.musicIndex].id === item.id,
+                      musicListItem:store.state.musicModule.musicList[store.state.musicModule.musicIndex].id !== item.id}"
+                     @click="selectMusic(item)"
+                     v-show="(musicAlbumMusicList.length > 0 || musicAlbumMusicList !== null) && (showLocalOrOnline === false)"
+                     v-for="(item,index) in musicAlbumMusicList">
+                  {{(index + 1) + ".  " +item.name}}
+                  <div class="musicListItem_ar">
+                    <span v-if="item.ar.length > 0 || item.ar !== null || item.ar !==undefined"
+                          v-for="item2 in item.ar">
+                      {{item2.name}}
+                    </span>
+                  </div>
+                </div>
+                <div class="musicListItem_local"
+                     v-show="(musicAlbumMusicList.length > 0 || musicAlbumMusicList !== null) && (showLocalOrOnline === true)"
+                     v-for="(item,index) in musicAlbumMusicList">
+                  <div  :class="{musicListItem_play_local_playing:store.state.musicModule.musicList[store.state.musicModule.musicIndex].id === item.id,
+                    musicListItem_play_local:store.state.musicModule.musicList[store.state.musicModule.musicIndex].id !== item.id}" @click="selectMusic(item)" >
+                    {{(index + 1) + ".  " +item.name}}
+                    <div class="musicListItem_ar_local">
+                      <span v-if="item.ar.length > 0 || item.ar !== null || item.ar !==undefined"
+                          v-for="item2 in item.ar">
+                      {{item2.name}}
+                    </span>
+                    </div>
+                  </div>
+                  <div class="deleteMusicItem_local" @click="deleteFromLocalList(item.id)">
+                    <el-icon ><Delete/></el-icon>
+                  </div>
+                </div>
+              </el-scrollbar>
+            </div>
+          </div>
+          <div class="albumListContainer">
+            <div class="albumListItem"
+                 @click="getAlbumMusicList(item.id)"
+                 v-if="musicAlbumList.length > 0 || musicAlbumList !== null"
+                 v-for="item in musicAlbumList">
+              <img :src="item.picUrl" alt="">
+              <div class="albumName">
+                {{item.name}}
+              </div>
+              <div class="playCount">
+                <el-icon><VideoPlay/></el-icon>
+                {{changeCount(item.playCount)}}
+              </div>
+            </div>
+          </div>
         </div>
         <div class="musicDrawerBottom">
           <div class="musicProgressBar">
@@ -126,15 +177,23 @@
                        :min=0 :max="store.state.musicModule.duration" :step=0.5 />
           </div>
           <div class="musicOperate">
-            <div class="lastPlay">
-              <el-icon @click="goPlay(-1)"><CaretLeft/></el-icon>
+            <div class="switchPlayMode" @click="changePlayModel">
+              <el-icon  v-show="store.state.musicModule.playMode===0"><svg t="1660555125611" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1254" width="200" height="200"><path d="M462.364444 234.666667a21.333333 21.333333 0 0 1 3.84 42.325333l-3.84 0.341333H384c-129.607111 0-234.666667 105.059556-234.666667 234.666667 0 126.435556 99.996444 229.532444 225.223111 234.481778L384 746.666667h42.666667v-43.392a8.533333 8.533333 0 0 1 1.137777-4.266667l1.365334-1.777778a8.533333 8.533333 0 0 1 9.856-1.592889l2.204444 1.592889 64.739556 64.739556a8.533333 8.533333 0 0 1 1.592889 9.856l-1.592889 2.204444-64.739556 64.739556a8.533333 8.533333 0 0 1-14.264889-3.768889l-0.298666-2.275556V789.333333h-42.666667C230.826667 789.333333 106.666667 665.173333 106.666667 512c0-149.831111 118.826667-271.928889 267.377777-277.162667l9.955556-0.170666h78.364444zM640 320.725333a8.533333 8.533333 0 0 1-14.563556 6.044445l-64.739555-64.739556a8.533333 8.533333 0 0 1 0-12.060444l64.739555-64.739556A8.533333 8.533333 0 0 1 640 191.288889V234.666667c153.173333 0 277.333333 124.16 277.333333 277.333333 0 149.831111-118.826667 271.928889-267.377777 277.162667l-9.955556 0.170666h-42.666667a21.333333 21.333333 0 0 1-3.84-42.325333L597.333333 746.666667h42.666667c129.607111 0 234.666667-105.059556 234.666667-234.666667S769.607111 277.333333 640 277.333333v43.392z" p-id="1255"></path></svg></el-icon>
+              <el-icon  v-show="store.state.musicModule.playMode===1"><svg t="1660554931810" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="953" width="200" height="200"><path d="M855.836444 270.563556a8.533333 8.533333 0 0 1 9.856-1.592889l2.204445 1.592889 64.739555 64.739555a8.533333 8.533333 0 0 1 1.592889 9.856l-1.592889 2.204445-64.739555 64.739555a8.533333 8.533333 0 0 1-14.264889-3.768889l-0.298667-2.275555V362.666667h-132.792889c-52.536889 0-83.484444 16.583111-104.135111 49.934222a21.333333 21.333333 0 0 1-36.266666-22.442667c26.951111-43.605333 68.408889-67.413333 129.422222-69.930666l10.979555-0.227556H853.333333v-43.392a8.533333 8.533333 0 0 1 1.137778-4.266667l1.365333-1.777777z" p-id="954"></path><path d="M377.955556 320c122.311111 0 166.684444 50.602667 199.722666 175.587556l5.006222 19.712c27.320889 109.539556 50.972444 143.829333 129.792 145.92l8.064 0.113777H853.333333v-43.392a8.533333 8.533333 0 0 1 1.137778-4.266666l1.365333-1.777778a8.533333 8.533333 0 0 1 9.856-1.592889l2.204445 1.592889 64.739555 64.739555a8.533333 8.533333 0 0 1 1.592889 9.856l-1.592889 2.204445-64.739555 64.739555a8.533333 8.533333 0 0 1-14.264889-3.768888l-0.298667-2.275556V704h-132.792889c-107.804444 0-144.64-45.482667-176.384-167.111111l-4.977777-19.697778c-28.302222-112.924444-58.083556-152.149333-152.206223-154.424889l-9.016888-0.099555H128a21.333333 21.333333 0 0 1-3.84-42.325334L128 320h249.955556z" p-id="955"></path><path d="M528.028444 607.644444a21.333333 21.333333 0 0 1 4.366223 29.866667c-30.805333 41.386667-76.8 63.900444-142.620445 66.275556l-11.818666 0.213333H128a21.333333 21.333333 0 0 1-3.84-42.325333L128 661.333333h249.955556c59.235556 0 96.014222-16.796444 120.220444-49.308444a21.333333 21.333333 0 0 1 29.852444-4.380445z" p-id="956"></path></svg></el-icon>
+              <el-icon  v-show="store.state.musicModule.playMode===2"><svg t="1660555083849" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1104" width="200" height="200"><path d="M640 234.666667c153.173333 0 277.333333 124.16 277.333333 277.333333S793.173333 789.333333 640 789.333333a21.333333 21.333333 0 0 1 0-42.666666c129.607111 0 234.666667-105.059556 234.666667-234.666667 0-126.435556-99.996444-229.532444-225.223111-234.481778L640 277.333333H384c-129.607111 0-234.666667 105.059556-234.666667 234.666667 0 126.435556 99.996444 229.532444 225.223111 234.481778L384 746.666667h42.666667v-43.392a8.533333 8.533333 0 0 1 1.137777-4.266667l1.365334-1.777778a8.533333 8.533333 0 0 1 9.856-1.592889l2.204444 1.592889 64.739556 64.739556a8.533333 8.533333 0 0 1 1.592889 9.856l-1.592889 2.204444-64.739556 64.739556a8.533333 8.533333 0 0 1-14.264889-3.768889l-0.298666-2.275556V789.333333h-42.666667C230.826667 789.333333 106.666667 665.173333 106.666667 512c0-149.831111 118.826667-271.928889 267.377777-277.162667l9.955556-0.170666h256z" p-id="1105"></path><path d="M554.666667 640V384h-36.124445L469.333333 427.150222v40.618667l49.208889-43.861333V640z" p-id="1106"></path></svg></el-icon>
+            </div>
+            <div class="lastPlay" @click="lastPlay">
+              <el-icon ><CaretLeft/></el-icon>
             </div>
             <div class="isPlay">
               <el-icon v-show="store.state.musicModule.isMusicPlaying===false"  @click="musicOn_Off"><VideoPlay /></el-icon>
               <el-icon v-show="store.state.musicModule.isMusicPlaying===true"   @click="musicOn_Off"><VideoPause /></el-icon>
             </div>
-            <div class="nextPlay">
-              <el-icon @click="goPlay(1)"><CaretRight/></el-icon>
+            <div class="nextPlay" @click="nextPlay">
+              <el-icon ><CaretRight/></el-icon>
+            </div>
+            <div class="myMusicListOpen" @click="getLocalMusicList">
+              <el-icon><Expand/></el-icon>
             </div>
           </div>
         </div>
@@ -151,8 +210,24 @@ export default {
 <script setup>
 import {computed, nextTick, onMounted, onUpdated, reactive, ref, watch} from 'vue'
 import store from "@/store";
-import {ArrowDownBold, Search, Back, Close, VideoPlay, VideoPause, CaretLeft, CaretRight} from "@element-plus/icons-vue";
-import {getMusicSearched, getSearchHotDetail, getSearchWordDefault, getSuggestWord} from "@/request/api/music";
+import {
+  ArrowDownBold,
+  Search,
+  Back,
+  Close,
+  VideoPlay,
+  VideoPause,
+  CaretLeft,
+  CaretRight,
+  Expand, Delete
+} from "@element-plus/icons-vue";
+import {
+  getMusicList, getMusicListSongAll,
+  getMusicSearched,
+  getSearchHotDetail,
+  getSearchWordDefault,
+  getSuggestWord
+} from "@/request/api/music";
 import {debounce} from 'lodash'
 import $ from 'jquery'
 import {ElLoading} from "element-plus";
@@ -160,6 +235,7 @@ import {ElLoading} from "element-plus";
 const myAudio = document.getElementById('mp')
 let result = ref(false)
 let index_to_suggest = ref(false)
+let showLocalOrOnline = ref(false)
 let suggestionList = ref([])  //reactive不能双向绑定
 let musicSearchInput = ref()
 let direction = ref('btt')
@@ -174,8 +250,82 @@ let requestData = reactive({
 })
 let musicList = ref([])
 let hotMusicList = ref([])
+let musicAlbumList = ref([])
+let musicAlbumMusicList = ref([])
 let isLoadingComments = ref(false)
 let blockInfer = ref(false)
+//上一首
+const lastPlay = () => {
+  switch (store.state.musicModule.playMode) {
+    case 0:{
+      goPlay(-1)
+    }break;
+    case 1:{
+      let randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
+      if(randomNum === store.state.musicModule.musicIndex){
+        while (randomNum === store.state.musicModule.musicIndex){
+          randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
+        }
+        goPlay(randomNum)
+      }else {
+        goPlay(randomNum)
+      }
+    }break;
+    case 2:{
+      goPlay(-1)
+      nextTick(()=>{
+        goPlay(1)
+      })
+    }break;
+  }
+}
+//下一首
+const nextPlay = () => {
+  switch (store.state.musicModule.playMode) {
+    case 0:{
+      goPlay(1)
+    }break;
+    case 1:{
+      let randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
+      if(randomNum === store.state.musicModule.musicIndex){
+        while (randomNum === store.state.musicModule.musicIndex){
+          randomNum = Math.floor(Math.random() *(store.state.musicModule.musicList.length))
+        }
+        goPlay(randomNum)
+      }else {
+        goPlay(randomNum)
+      }
+    }break;
+    case 2:{
+      goPlay(-1)
+      nextTick(()=>{
+        goPlay(1)
+      })
+    }break;
+  }
+}
+//修改播放模式
+const changePlayModel = () => {
+  switch (store.state.musicModule.playMode) {
+    case 0:{//顺序播放
+      store.commit('musicModule/updatePlayMode',1)
+    } break;
+    case 1:{//随机播放
+      store.commit('musicModule/updatePlayMode',2)
+    }break;
+    case 2:{//单曲循环
+      store.commit('musicModule/updatePlayMode',0)
+    }break;
+  }
+}
+//修改播放量
+const changeCount = (num) => {
+  if(num >= 100000000){
+    return (num/100000000).toFixed(1) + '亿'
+  }else if(num >= 10000){
+    return (num/10000).toFixed(1) + '万'
+  }
+}
 const closeMusicDrawer = () => {
   store.commit('musicModule/updateIsMusicDrawerShow',false)
   store.commit('musicModule/updateIsMusicPlayerShow',true)
@@ -224,6 +374,31 @@ const goPlay = (e) => {
   let length = store.state.musicModule.musicList.length
   store.commit('musicModule/updateMusicIndex',(index + e + length)%length)
   store.commit('musicModule/updateIsMusicPlaying',true)
+}
+//获取音乐专辑音乐列表
+const getAlbumMusicList = async (e) => {
+  showLocalOrOnline.value = false
+  let res = await getMusicListSongAll(e)
+  if(res.data.code === 200){
+    musicAlbumMusicList.value = res.data.songs
+  }else {
+    console.log("歌单音乐获取失败")
+  }
+}
+//获取当前本地列表
+const getLocalMusicList = () => {
+  showLocalOrOnline.value = true
+  //如果本地列表为空
+  if (store.state.musicModule.musicList.length <= 0){
+    console.log("本地没有音乐")
+  }else {
+    musicAlbumMusicList.value = store.state.musicModule.musicList
+  }
+}
+//从当前本地列表删除
+const deleteFromLocalList = (e) => {
+  store.commit('musicModule/deleteMusicFromListById',e)
+  musicAlbumMusicList.value = store.state.musicModule.musicList
 }
 const exitResult = () => {
   result.value = false
@@ -354,6 +529,15 @@ onMounted(async () => {
     hotMusicList.value = res.data.data
   }else {
     console.log("热搜榜获取失败")
+  }
+})
+//获取音乐专辑
+onMounted(async () => {
+  let res = await getMusicList()
+  if (res.data.code === 200){
+    musicAlbumList.value = res.data.result
+  }else {
+    console.log("音乐专辑获取失败")
   }
 })
 </script>
@@ -587,6 +771,7 @@ onMounted(async () => {
   width: 100%;
   height: calc(100% - 12rem);
   position: relative;
+  justify-content: space-around;
 }
 .musicDrawerMiddle .musicInfos {
   position: absolute;
@@ -705,6 +890,166 @@ onMounted(async () => {
   font-weight: bold;
   text-align: center;
 }
+.musicDrawerMiddle .musicListContainer{
+  height: 100%;
+  width: 24rem;
+  display: flex;
+  justify-content: center;
+}
+.musicDrawerMiddle .musicListContainer .musicListContainerLayout{
+  width: 100%;
+  height: 64%;
+  margin-top: 8rem;
+}
+.musicListItem{
+  width: 98%;
+  height: 4rem;
+  background-color: #FFFFFF;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: .8rem;
+  text-align: center;
+}
+.musicListItem_playing{
+  width: 98%;
+  height: 4rem;
+  background-color: #FFFFFF;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: .8rem;
+  text-align: center;
+  color: #3c99f6;
+}
+.musicListItem:last-child{
+  margin-bottom: 0 !important;
+}
+.musicListItem:hover {
+  background-color: #2c2c2c !important;
+  color: #FFFFFF;
+}
+.musicListItem_ar span{
+  margin-right: .2rem;
+  font-size: .8rem;
+}
+
+.musicListItem_local{
+  width: 98%;
+  height: 4rem;
+  background-color: #FFFFFF;
+  border-radius: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: .8rem;
+  text-align: center;
+  position: relative;
+}
+.musicListItem_play_local {
+  width: 100%;
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.musicListItem_play_local_playing {
+  width: 100%;
+  height:100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #3c99f6;
+}
+.deleteMusicItem_local {
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  transform: translate(-50%,-50%);
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  z-index: 2100;
+}
+.deleteMusicItem_local>>>.el-icon {
+  font-size: 1.6rem;
+}
+.musicListItem_local:last-child{
+  margin-bottom: 0 !important;
+}
+.musicListItem_local:hover {
+  background-color: #2c2c2c !important;
+  color: #FFFFFF;
+}
+.musicListItem_ar_local span{
+  margin-right: .2rem;
+  font-size: .8rem;
+}
+
+.musicDrawerMiddle .albumListContainer{
+  height: 100%;
+  width: 36rem;
+  /*background-color: #f56c6c;*/
+
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  grid-gap: 4rem 8rem;
+  grid-template-columns: 8rem 8rem ;
+  grid-template-rows: 8rem 8rem 8rem 8rem;
+}
+.musicDrawerMiddle .albumListContainer .albumListItem {
+  width: 12rem;
+  height: 8rem;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  background-color: #FFFFFF;
+  align-items: center;
+  justify-content: center;
+  border-radius: .8rem;
+  box-shadow: 0 0 8px 8px white;
+}
+.musicDrawerMiddle .albumListContainer .albumListItem:hover {
+  background-color: #2c2c2c;
+  color: #FFFFFF;
+  box-shadow: 0 0 8px 8px #2c2c2c;
+}
+.musicDrawerMiddle .albumListContainer .albumListItem .albumName {
+  width: 4rem;
+  margin-left: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: .8rem;
+}
+.musicDrawerMiddle .albumListContainer .albumListItem img {
+  width: 6rem;
+  height: 6rem;
+  border-radius: .8rem;
+}
+.musicDrawerMiddle .albumListContainer .albumListItem .playCount{
+  position: absolute;
+  top: .5rem;
+  right: .2rem;
+  border-radius: 10rem;
+  font-size: .7rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 
 .musicDrawerBottom {
@@ -738,17 +1083,18 @@ onMounted(async () => {
   box-shadow: rgba(255, 255, 255, 0.8) 0 0 1rem;
 }
 .musicDrawerBottom .musicOperate{
-  width: 30%;
+  width: 100%;
   height: 6rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .musicDrawerBottom .musicOperate>>>.el-icon {
   font-size: 1.6rem;
 }
 .lastPlay,
-.nextPlay {
+.nextPlay{
   width: 2rem;
   height: 2rem;
   background-color: rgba(253, 251, 251, 0.8);
@@ -770,12 +1116,39 @@ onMounted(async () => {
 .isPlay>>>.el-icon {
   font-size: 2.4rem !important;
 }
-
 .lastPlay:hover,
 .isPlay:hover,
-.nextPlay:hover{
+.nextPlay:hover,
+.myMusicListOpen:hover,
+.switchPlayMode:hover{
   background-color: #2c2c2c;
   color: #f9f9f9;
+}
+.myMusicListOpen {
+  position: absolute;
+  transform: translate(-50%,-50%);
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(253, 251, 251, 0.8);
+  border-radius: 50%;
+  top: 50%;
+  right: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.switchPlayMode{
+  position: absolute;
+  transform: translate(-50%,-50%);
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(253, 251, 251, 0.8);
+  border-radius: 50%;
+  top: 50%;
+  right: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes musicPicRotate {
@@ -786,4 +1159,8 @@ onMounted(async () => {
     transform: translate(-50%,-50%) rotate(360deg);
   }
 }
+/*@media screen and (max-width: 1050px) {*/
+/*  .musicDrawerContainer{*/
+/*    background-color: rgba(154, 23, 23, 0.7);}*/
+/*}*/
 </style>
