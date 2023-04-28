@@ -85,3 +85,13 @@ export const checkQr = (key) =>{
         url:`/login/qr/check?key=${key}&timestamp=${Date.now()}`
     })
 }
+
+export const getLoginStatus = (cookie = '') => {
+  return service_music({
+      method:"POST",
+      url:`/login/status?timestamp=${Date.now()}`,
+      data:{
+          cookie,
+      }
+  })
+}

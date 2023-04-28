@@ -5,13 +5,12 @@
   </div>
   <img id="qrimg">
   <div id="qrStatus">12</div>
-
 </template>
 
 
 <script setup>
 import headerNav from "@/components/headerNav";
-import {checkQr, getQrKey, getQr} from "@/request/api/music";
+import {checkQr, getQrKey, getQr, getLoginStatus} from "@/request/api/music";
 import {useRouter} from "vue-router/dist/vue-router";
 let qrkey
 let timer
@@ -39,7 +38,9 @@ const qrLogin = async () => {
       // message :"授权登陆成功"
       clearInterval(timer)
       localStorage.setItem('cookie', qrStatus.data.cookie)
-      await router.push('home')
+      let info = await getLoginStatus(qrStatus.data.cookie)
+      console.log(info)
+      // await router.push('home')
     }
   }, 3000)
 }
