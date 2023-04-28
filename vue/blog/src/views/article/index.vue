@@ -70,16 +70,14 @@
               <el-divider content-position="center">文章结束了</el-divider>
               <div class="articleCardBottom">
                 <div class="lastArticle"
-                     v-if="store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_last.index].title !== null
-                     || store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_last.index].title !== undefined">
+                     v-if="store.state.articleModule.articleCatalogue.length > 0 || store.state.articleModule.articleCatalogue !== null">
                   <el-icon><Back/></el-icon>
                   <span @click="updateArticlePre(store.state.articleModule.articleId_last.id)">
                   {{store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_last.index].title}}
                 </span>
                 </div>
                 <div class="nextArticle"
-                     v-if="store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_next.index].title !== null
-                     || store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_next.index].title !== undefined">
+                     v-if="store.state.articleModule.articleCatalogue.length > 0 || store.state.articleModule.articleCatalogue !== null">
                   <span @click="updateArticlePre(store.state.articleModule.articleId_next.id)">
                     {{store.state.articleModule.articleCatalogue[store.state.articleModule.articleId_next.index].title}}
                   </span>

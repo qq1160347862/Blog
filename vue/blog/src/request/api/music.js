@@ -63,3 +63,25 @@ export const getMusicListSongAll = (id) => {
         url:`/playlist/track/all?id=${id}`
     })
 }
+
+
+// 二维码登陆测试
+export const getQrKey = () =>{
+    return service_music({
+        method:"GET",
+        url:`/login/qr/key?timestamp=${Date.now()}`
+    })
+}
+
+export const getQr = (key) =>{
+    return service_music({
+        method:"GET",
+        url:`/login/qr/create?key=${key}&qrimg=true&timestamp=${Date.now()}`
+    })
+}
+export const checkQr = (key) =>{
+    return service_music({
+        method:"GET",
+        url:`/login/qr/check?key=${key}&timestamp=${Date.now()}`
+    })
+}

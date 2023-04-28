@@ -28,7 +28,7 @@
             </li>
           </ul>
         </li>
-        <li class="home">
+        <li class="home" @click="test">
           主页
         </li>
         <li class="article">
@@ -62,6 +62,9 @@ const loginClick = () => {
 }
 const homeClick = () => {
   router.push('home')
+}
+const test = () => {
+  router.push('aboutView')
 }
 const searchFocus = () => {
   console.log("获取焦点")

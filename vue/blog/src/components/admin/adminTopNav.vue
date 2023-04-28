@@ -1,7 +1,7 @@
 <template>
   <div class="adminTopNavContainer">
     <div class="adminHeadImg">
-      <img src="../../assets/headimg.jpg">
+      <img src="../../assets/headimg.jpg" @click="returnHome">
     </div>
     <div class="adminTitle">
       <span>后台管理</span>
@@ -12,6 +12,13 @@
 <script>
 export default {
   name: "adminTopNav"
+}
+</script>
+<script setup>
+import {useRouter} from "vue-router";
+let router = useRouter()
+const returnHome = () => {
+  router.push("/home")
 }
 </script>
 
